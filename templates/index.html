@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}Inicio | Predictor Mundial Cuervo{% endblock %}
+{% block content %}
+<section class="hero split-grid">
+    <div>
+        <p class="eyebrow">Mundial, amigos y orgullo cuervo</p>
+        <h1>Pronostica cada partido. Defiende tu puesto en la tabla.</h1>
+        <p class="hero-copy">Carga tus marcadores antes del pitazo inicial, suma puntos por exactitud y pelea la cima del ranking global.</p>
+        <div class="hero-actions">
+            {% if current_user.is_authenticated %}
+                <a class="button primary" href="{{ url_for('match.matches') }}">Ver partidos</a>
+                <a class="button ghost" href="{{ url_for('ranking.ranking') }}">Ranking</a>
+            {% else %}
+                <a class="button primary" href="{{ url_for('auth.register') }}">Entrar al torneo</a>
+                <a class="button ghost" href="{{ url_for('auth.login') }}">Ya tengo cuenta</a>
+            {% endif %}
+        </div>
+    </div>
+    <aside class="scoreboard-card">
+        <span class="live-chip">Regla de puntos</span>
+        <div class="scoreline"><span>Exacto</span><strong>3 pts</strong></div>
+        <div class="scoreline"><span>Ganador o empate</span><strong>2 pts</strong></div>
+        <div class="scoreline"><span>Sin acierto</span><strong>0 pts</strong></div>
+    </aside>
+</section>
+{% endblock %}

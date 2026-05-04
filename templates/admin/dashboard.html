@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}Admin | Predictor Mundial Cuervo{% endblock %}
+{% block content %}
+<section class="page-head">
+    <p class="eyebrow">Panel admin</p>
+    <h1>Control del torneo</h1>
+    <p class="muted">Carga fixture y resultados manualmente. La estructura API queda lista para cuando tengas la key.</p>
+</section>
+<section class="metric-grid">
+    <article class="metric-card"><span>Partidos</span><strong>{{ total_matches }}</strong></article>
+    <article class="metric-card"><span>Finalizados</span><strong>{{ finished_matches }}</strong></article>
+    <article class="metric-card"><span>Predicciones</span><strong>{{ predictions_count }}</strong></article>
+    <article class="metric-card"><span>API</span><strong>{{ "ON" if api_configured else "OFF" }}</strong></article>
+</section>
+<section class="admin-actions">
+    <a class="button primary" href="{{ url_for('admin.matches') }}">Gestionar partidos</a>
+    <a class="button ghost" href="{{ url_for('admin.new_match') }}">Nuevo partido</a>
+    <form method="post" action="{{ url_for('admin.recalculate_points') }}"><button class="button ghost" type="submit">Recalcular puntos</button></form>
+    <form method="post" action="{{ url_for('admin.sync_fixtures_route') }}"><button class="button ghost" type="submit">Sincronizar fixture API</button></form>
+    <form method="post" action="{{ url_for('admin.sync_results_route') }}"><button class="button ghost" type="submit">Actualizar resultados API</button></form>
+</section>
+{% endblock %}

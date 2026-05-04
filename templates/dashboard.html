@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}Dashboard | Predictor Mundial Cuervo{% endblock %}
+{% block content %}
+<section class="page-head">
+    <p class="eyebrow">Hola, {{ current_user.username }}</p>
+    <h1>Tu comando de partido</h1>
+</section>
+<section class="metric-grid">
+    <article class="metric-card"><span>Puntos</span><strong>{{ total_points }}</strong></article>
+    <article class="metric-card"><span>Predicciones</span><strong>{{ predictions|length }}</strong></article>
+    <article class="metric-card"><span>Exactos</span><strong>{{ exact_hits }}</strong></article>
+    <article class="metric-card"><span>Ranking</span><strong>{% if position %}#{{ position }}{% else %}-{% endif %}</strong></article>
+</section>
+<section class="panel">
+    <div class="section-title"><h2>Proximos partidos</h2><a href="{{ url_for('match.matches') }}">Ver todos</a></div>
+    <div class="match-list compact">
+        {% for match in next_matches %}
+            <article class="match-row">
+                <div><strong>{{ match.home_team }} vs {{ match.away_team }}</strong><span>{{ match.starts_at.strftime('%d/%m/%Y %H:%M') }} · {{ match.venue }}</span></div>
+                <span class="status {{ match.status_label|lower|replace(' ', '-') }}">{{ match.status_label }}</span>
+            </article>
+        {% else %}
+            <p class="muted">No hay partidos cargados.</p>
+        {% endfor %}
+    </div>
+</section>
+{% endblock %}

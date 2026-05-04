@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}Ranking | Predictor Mundial Cuervo{% endblock %}
+{% block content %}
+<section class="page-head">
+    <p class="eyebrow">Tabla general</p>
+    <h1>Ranking Cuervo</h1>
+</section>
+<section class="ranking-table">
+    <div class="ranking-row head"><span>#</span><span>Jugador</span><span>Pts</span><span>Pred.</span><span>Exactos</span></div>
+    {% for user, total_points, predictions_count, exact_hits in rows %}
+        <div class="ranking-row {% if user.id == current_user.id %}you{% endif %}">
+            <span>{{ loop.index }}</span>
+            <strong>{{ user.username }}</strong>
+            <span>{{ total_points }}</span>
+            <span>{{ predictions_count }}</span>
+            <span>{{ exact_hits or 0 }}</span>
+        </div>
+    {% else %}
+        <p class="muted">Todavia no hay jugadores.</p>
+    {% endfor %}
+</section>
+{% endblock %}

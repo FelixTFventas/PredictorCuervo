@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}Perfil | Predictor Mundial Cuervo{% endblock %}
+{% block content %}
+<section class="page-head">
+    <p class="eyebrow">Ficha de jugador</p>
+    <h1>{{ current_user.username }}</h1>
+    <p class="muted">{{ current_user.email }}</p>
+</section>
+<section class="panel">
+    <div class="section-title"><h2>Historial</h2><span>{{ predictions|length }} predicciones</span></div>
+    <div class="match-list compact">
+        {% for prediction in predictions %}
+            <article class="match-row">
+                <div><strong>{{ prediction.match.home_team }} vs {{ prediction.match.away_team }}</strong><span>Prediccion {{ prediction.pred_home_score }} - {{ prediction.pred_away_score }}</span></div>
+                <span class="points-pill">{{ prediction.points }} pts</span>
+            </article>
+        {% else %}
+            <p class="muted">Aun no cargaste predicciones.</p>
+        {% endfor %}
+    </div>
+</section>
+{% endblock %}

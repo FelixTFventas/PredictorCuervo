@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}Admin Partidos | Predictor Mundial Cuervo{% endblock %}
+{% block content %}
+<section class="page-head admin-headline">
+    <div>
+        <p class="eyebrow">Fixture admin</p>
+        <h1>Partidos</h1>
+    </div>
+    <a class="button primary" href="{{ url_for('admin.new_match') }}">Nuevo partido</a>
+</section>
+<section class="admin-match-list">
+    {% for match in matches %}
+        <article class="admin-match-card">
+            <div class="admin-match-main">
+                <span class="status {{ match.status_label|lower|replace(' ', '-') }}">{{ match.status_label }}</span>
+                <h2>{{ match.home_team }} vs {{ match.away_team }}</h2>
+                <p class="muted">{{ match.starts_at.strftime('%d/%m/%Y %H:%M') }} · {{ match.round_name }} · {{ match.venue }}</p>
+                {% if match.has_result %}<p class="result-strip">Resultado: {{ match.home_score }} - {{ match.away_score }}</p>{% endif %}
+            </div>
+            <div class="admin-match-tools">
+                <a class="button small ghost" href="{{ url_for('admin.edit_match', match_id=match.id) }}">Editar</a>
+                <form method="post" action="{{ url_for('admin.save_result', match_id=match.id) }}" class="result-form">
+                    <input type="number" name="home_score" min="0" value="{{ match.home_score if match.home_score is not none else '' }}" placeholder="Local" required>
+                    <input type="number" name="away_score" min="0" value="{{ match.away_score if match.away_score is not none else '' }}" placeholder="Visitante" required>
+                    <button class="button small" type="submit">Guardar resultado</button>
+                </form>
+            </div>
+        </article>
+    {% else %}
+        <p class="muted">No hay partidos cargados.</p>
+    {% endfor %}
+</section>
+{% endblock %}

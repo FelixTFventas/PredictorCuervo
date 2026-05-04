@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}Ingresar | Predictor Mundial Cuervo{% endblock %}
+{% block content %}
+<section class="auth-card">
+    <p class="eyebrow">Vestuario</p>
+    <h1>Volver a la cancha</h1>
+    <form method="post" class="form-card">
+        <label>Usuario o email<input name="identifier" required autocomplete="username"></label>
+        <label>Contrasena<input name="password" type="password" required autocomplete="current-password"></label>
+        <button class="button primary" type="submit">Ingresar</button>
+    </form>
+    <p class="muted">No tienes cuenta? <a href="{{ url_for('auth.register') }}">Registrate</a></p>
+</section>
+{% endblock %}

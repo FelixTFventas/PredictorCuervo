@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}Partidos | Predictor Mundial Cuervo{% endblock %}
+{% block content %}
+<section class="page-head">
+    <p class="eyebrow">Fixture</p>
+    <h1>Predicciones</h1>
+    <p class="muted">Puedes editar hasta el inicio del partido.</p>
+</section>
+<section class="matches-grid">
+    {% for match in matches %}
+        {% set prediction = user_predictions.get(match.id) %}
+        <article class="match-card">
+            <div class="match-meta">
+                <span>{{ match.group_name }}</span>
+                <span class="status {{ match.status_label|lower|replace(' ', '-') }}">{{ match.status_label }}</span>
+            </div>
+            <div class="teams">
+                <strong>{{ match.home_team }}</strong>
+                <span>vs</span>
+                <strong>{{ match.away_team }}</strong>
+            </div>
+            <p class="muted">{{ match.starts_at.strftime('%d/%m/%Y %H:%M') }} · {{ match.venue }}</p>
+            {% if match.has_result %}
+                <div class="result-strip">Resultado: {{ match.home_score }} - {{ match.away_score }}</div>
+            {% endif %}
+            {% if prediction %}
+                <div class="prediction-strip">Tu prediccion: {{ prediction.pred_home_score }} - {{ prediction.pred_away_score }} · {{ prediction.points }} pts</div>
+            {% endif %}
+            <form method="post" action="{{ url_for('prediction.save_prediction', match_id=match.id) }}" class="prediction-form">
+                <input type="number" name="pred_home_score" min="0" value="{{ prediction.pred_home_score if prediction else '' }}" placeholder="0" {% if not match.can_predict %}disabled{% endif %} required>
+                <span>-</span>
+                <input type="number" name="pred_away_score" min="0" value="{{ prediction.pred_away_score if prediction else '' }}" placeholder="0" {% if not match.can_predict %}disabled{% endif %} required>
+                <button class="button small" type="submit" {% if not match.can_predict %}disabled{% endif %}>Guardar</button>
+            </form>
+        </article>
+    {% else %}
+        <p class="muted">Todavia no hay partidos.</p>
+    {% endfor %}
+</section>
+{% endblock %}
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/predictions.js') }}"></script>
+{% endblock %}
