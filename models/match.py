@@ -37,8 +37,14 @@ class Match(db.Model):
         return datetime.now(timezone.utc) >= starts_at
 
     @property
+    def has_placeholder_teams(self):
+        placeholder_terms = ("Clasificado", "Ganador", "Perdedor")
+        teams = (self.home_team or "", self.away_team or "")
+        return any(term in team for team in teams for term in placeholder_terms)
+
+    @property
     def can_predict(self):
-        return self.status == "scheduled" and not self.is_locked
+        return self.status == "scheduled" and not self.has_placeholder_teams and not self.is_locked
 
     @property
     def status_label(self):

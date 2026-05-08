@@ -10,6 +10,7 @@ from routes.prediction_routes import prediction_bp
 from routes.ranking_routes import ranking_bp
 from services.admin_service import ensure_admin_user
 from services.schema_service import ensure_sqlite_schema
+from services.team_flags import team_flag
 
 
 def create_app():
@@ -28,6 +29,10 @@ def create_app():
     @app.route("/")
     def index():
         return render_template("index.html")
+
+    @app.context_processor
+    def inject_team_helpers():
+        return {"team_flag": team_flag}
 
     with app.app_context():
         db.create_all()

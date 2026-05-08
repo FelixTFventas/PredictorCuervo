@@ -1,4 +1,5 @@
 from datetime import datetime
+from collections import OrderedDict
 from functools import wraps
 
 from flask import Blueprint, current_app, flash, redirect, render_template, request, url_for
@@ -7,6 +8,8 @@ from flask_login import current_user, login_required
 from models import db
 from models.match import Match
 from models.prediction import Prediction
+from services.fixture_import_service import import_group_fixture
+from services.knockout_fixture_service import create_knockout_placeholders
 from services.points_service import update_prediction_points
 from services.sync_service import sync_fixtures, sync_results
 
@@ -14,6 +17,14 @@ from services.sync_service import sync_fixtures, sync_results
 admin_bp = Blueprint("admin", __name__, url_prefix="/admin")
 
 MATCH_STATUSES = ["scheduled", "live", "finished", "postponed", "cancelled"]
+
+
+def group_matches(matches):
+    grouped = OrderedDict()
+    for match in matches:
+        key = match.group_name if match.group_name != "Eliminacion directa" else match.stage
+        grouped.setdefault(key, []).append(match)
+    return grouped
 
 
 def admin_required(view):
@@ -70,7 +81,7 @@ def dashboard():
 @admin_required
 def matches():
     matches_list = Match.query.order_by(Match.starts_at.asc()).all()
-    return render_template("admin/matches.html", matches=matches_list)
+    return render_template("admin/matches.html", grouped_matches=group_matches(matches_list))
 
 
 @admin_bp.route("/matches/new", methods=["GET", "POST"])
@@ -145,6 +156,22 @@ def recalculate_points():
     db.session.commit()
     flash("Puntos recalculados.", "success")
     return redirect(url_for("admin.dashboard"))
+
+
+@admin_bp.route("/import-group-fixture", methods=["POST"])
+@admin_required
+def import_group_fixture_route():
+    result = import_group_fixture()
+    flash(result.message, "success" if result.ok else "error")
+    return redirect(url_for("admin.matches" if result.ok else "admin.dashboard"))
+
+
+@admin_bp.route("/create-knockout-placeholders", methods=["POST"])
+@admin_required
+def create_knockout_placeholders_route():
+    result = create_knockout_placeholders()
+    flash(result.message, "success" if result.ok else "error")
+    return redirect(url_for("admin.matches"))
 
 
 @admin_bp.route("/sync-fixtures", methods=["POST"])

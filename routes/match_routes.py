@@ -1,4 +1,5 @@
 from sqlalchemy import func
+from collections import OrderedDict
 
 from flask import Blueprint, render_template
 from flask_login import current_user, login_required
@@ -9,6 +10,14 @@ from models.user import User
 
 
 match_bp = Blueprint("match", __name__)
+
+
+def group_matches(matches):
+    grouped = OrderedDict()
+    for match in matches:
+        key = match.group_name if match.group_name != "Eliminacion directa" else match.stage
+        grouped.setdefault(key, []).append(match)
+    return grouped
 
 
 @match_bp.route("/dashboard")
@@ -41,11 +50,12 @@ def dashboard():
 @login_required
 def matches():
     matches_list = Match.query.order_by(Match.starts_at.asc()).all()
+    grouped_matches = group_matches(matches_list)
     user_predictions = {
         prediction.match_id: prediction
         for prediction in Prediction.query.filter_by(user_id=current_user.id).all()
     }
-    return render_template("matches.html", matches=matches_list, user_predictions=user_predictions)
+    return render_template("matches.html", grouped_matches=grouped_matches, user_predictions=user_predictions)
 
 
 @match_bp.route("/profile")

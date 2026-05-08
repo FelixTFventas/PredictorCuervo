@@ -5,27 +5,48 @@
     <div>
         <p class="eyebrow">Fixture admin</p>
         <h1>Partidos</h1>
+        <p class="muted">Gestiona resultados y edita cruces desde un calendario separado por grupos y fases.</p>
     </div>
     <a class="button primary" href="{{ url_for('admin.new_match') }}">Nuevo partido</a>
 </section>
-<section class="admin-match-list">
-    {% for match in matches %}
-        <article class="admin-match-card">
-            <div class="admin-match-main">
-                <span class="status {{ match.status_label|lower|replace(' ', '-') }}">{{ match.status_label }}</span>
-                <h2>{{ match.home_team }} vs {{ match.away_team }}</h2>
-                <p class="muted">{{ match.starts_at.strftime('%d/%m/%Y %H:%M') }} · {{ match.round_name }} · {{ match.venue }}</p>
-                {% if match.has_result %}<p class="result-strip">Resultado: {{ match.home_score }} - {{ match.away_score }}</p>{% endif %}
+<section class="fixture-board admin-fixture-board">
+    {% for group_name, matches in grouped_matches.items() %}
+        <section class="group-section admin-group-section">
+            <div class="group-header">
+                <div>
+                    <span class="group-kicker">{{ "Fase" if group_name not in ["Grupo A", "Grupo B", "Grupo C", "Grupo D", "Grupo E", "Grupo F", "Grupo G", "Grupo H", "Grupo I", "Grupo J", "Grupo K", "Grupo L"] else "Grupo" }}</span>
+                    <h2>{{ group_name }}</h2>
+                </div>
+                <span class="group-count">{{ matches|length }} partidos</span>
             </div>
-            <div class="admin-match-tools">
-                <a class="button small ghost" href="{{ url_for('admin.edit_match', match_id=match.id) }}">Editar</a>
-                <form method="post" action="{{ url_for('admin.save_result', match_id=match.id) }}" class="result-form">
-                    <input type="number" name="home_score" min="0" value="{{ match.home_score if match.home_score is not none else '' }}" placeholder="Local" required>
-                    <input type="number" name="away_score" min="0" value="{{ match.away_score if match.away_score is not none else '' }}" placeholder="Visitante" required>
-                    <button class="button small" type="submit">Guardar resultado</button>
-                </form>
+            <div class="admin-match-list grouped-admin-list">
+                {% for match in matches %}
+                    <article class="admin-match-card {% if match.has_placeholder_teams %}placeholder-match{% endif %}">
+                        <div class="admin-match-main">
+                            <div class="match-meta">
+                                <span>{{ match.starts_at.strftime('%d/%m/%Y %H:%M') }}</span>
+                                <span class="status {{ match.status_label|lower|replace(' ', '-') }}">{{ "Pendiente" if match.has_placeholder_teams else match.status_label }}</span>
+                            </div>
+                            <h2 class="admin-teams-title">
+                                <span class="team-name"><span class="team-flag">{{ team_flag(match.home_team) }}</span>{{ match.home_team }}</span>
+                                <span class="versus-text">vs</span>
+                                <span class="team-name"><span class="team-flag">{{ team_flag(match.away_team) }}</span>{{ match.away_team }}</span>
+                            </h2>
+                            <p class="muted">{{ match.round_name }} · {{ match.venue }}</p>
+                            {% if match.has_result %}<p class="result-strip">Resultado: {{ match.home_score }} - {{ match.away_score }}</p>{% endif %}
+                        </div>
+                        <div class="admin-match-tools">
+                            <a class="button small ghost" href="{{ url_for('admin.edit_match', match_id=match.id) }}">Editar</a>
+                            <form method="post" action="{{ url_for('admin.save_result', match_id=match.id) }}" class="result-form">
+                                <input type="number" name="home_score" min="0" value="{{ match.home_score if match.home_score is not none else '' }}" placeholder="Local" required>
+                                <input type="number" name="away_score" min="0" value="{{ match.away_score if match.away_score is not none else '' }}" placeholder="Visitante" required>
+                                <button class="button small" type="submit">Guardar resultado</button>
+                            </form>
+                        </div>
+                    </article>
+                {% endfor %}
             </div>
-        </article>
+        </section>
     {% else %}
         <p class="muted">No hay partidos cargados.</p>
     {% endfor %}

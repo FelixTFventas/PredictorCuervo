@@ -15,6 +15,8 @@
 <section class="admin-actions">
     <a class="button primary" href="{{ url_for('admin.matches') }}">Gestionar partidos</a>
     <a class="button ghost" href="{{ url_for('admin.new_match') }}">Nuevo partido</a>
+    <form method="post" action="{{ url_for('admin.import_group_fixture_route') }}"><button class="button ghost" type="submit">Importar grupos 2026</button></form>
+    <form method="post" action="{{ url_for('admin.create_knockout_placeholders_route') }}"><button class="button ghost" type="submit">Crear eliminatoria 2026</button></form>
     <form method="post" action="{{ url_for('admin.recalculate_points') }}"><button class="button ghost" type="submit">Recalcular puntos</button></form>
     <form method="post" action="{{ url_for('admin.sync_fixtures_route') }}"><button class="button ghost" type="submit">Sincronizar fixture API</button></form>
     <form method="post" action="{{ url_for('admin.sync_results_route') }}"><button class="button ghost" type="submit">Actualizar resultados API</button></form>

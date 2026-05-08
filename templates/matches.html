@@ -4,35 +4,50 @@
 <section class="page-head">
     <p class="eyebrow">Fixture</p>
     <h1>Predicciones</h1>
-    <p class="muted">Puedes editar hasta el inicio del partido.</p>
+    <p class="muted">Partidos ordenados por grupos y fases. Los cruces pendientes se habilitan cuando tengan equipos definidos.</p>
 </section>
-<section class="matches-grid">
-    {% for match in matches %}
-        {% set prediction = user_predictions.get(match.id) %}
-        <article class="match-card">
-            <div class="match-meta">
-                <span>{{ match.group_name }}</span>
-                <span class="status {{ match.status_label|lower|replace(' ', '-') }}">{{ match.status_label }}</span>
+<section class="fixture-board">
+    {% for group_name, matches in grouped_matches.items() %}
+        <section class="group-section">
+            <div class="group-header">
+                <div>
+                    <span class="group-kicker">{{ "Fase" if group_name not in ["Grupo A", "Grupo B", "Grupo C", "Grupo D", "Grupo E", "Grupo F", "Grupo G", "Grupo H", "Grupo I", "Grupo J", "Grupo K", "Grupo L"] else "Grupo" }}</span>
+                    <h2>{{ group_name }}</h2>
+                </div>
+                <span class="group-count">{{ matches|length }} partidos</span>
             </div>
-            <div class="teams">
-                <strong>{{ match.home_team }}</strong>
-                <span>vs</span>
-                <strong>{{ match.away_team }}</strong>
+            <div class="group-match-grid">
+                {% for match in matches %}
+                    {% set prediction = user_predictions.get(match.id) %}
+                    <article class="match-card compact-card {% if match.has_placeholder_teams %}placeholder-match{% endif %}">
+                        <div class="match-meta">
+                            <span>{{ match.starts_at.strftime('%d/%m %H:%M') }}</span>
+                            <span class="status {{ match.status_label|lower|replace(' ', '-') }}">{{ "Pendiente" if match.has_placeholder_teams else match.status_label }}</span>
+                        </div>
+                        <div class="teams">
+                            <strong><span class="team-name"><span class="team-flag">{{ team_flag(match.home_team) }}</span>{{ match.home_team }}</span></strong>
+                            <span>vs</span>
+                            <strong><span class="team-name team-name-away"><span class="team-flag">{{ team_flag(match.away_team) }}</span>{{ match.away_team }}</span></strong>
+                        </div>
+                        <p class="muted">{{ match.venue }} · {{ match.round_name }}</p>
+                        {% if match.has_result %}
+                            <div class="result-strip">Resultado: {{ match.home_score }} - {{ match.away_score }}</div>
+                        {% endif %}
+                        {% if prediction %}
+                            <div class="prediction-strip">Tu prediccion: {{ prediction.pred_home_score }} - {{ prediction.pred_away_score }} · {{ prediction.points }} pts</div>
+                        {% elif match.has_placeholder_teams %}
+                            <div class="prediction-strip muted-strip">Predicciones bloqueadas hasta confirmar equipos.</div>
+                        {% endif %}
+                        <form method="post" action="{{ url_for('prediction.save_prediction', match_id=match.id) }}" class="prediction-form">
+                            <input type="number" name="pred_home_score" min="0" value="{{ prediction.pred_home_score if prediction else '' }}" placeholder="0" {% if not match.can_predict %}disabled{% endif %} required>
+                            <span>-</span>
+                            <input type="number" name="pred_away_score" min="0" value="{{ prediction.pred_away_score if prediction else '' }}" placeholder="0" {% if not match.can_predict %}disabled{% endif %} required>
+                            <button class="button small" type="submit" {% if not match.can_predict %}disabled{% endif %}>Guardar</button>
+                        </form>
+                    </article>
+                {% endfor %}
             </div>
-            <p class="muted">{{ match.starts_at.strftime('%d/%m/%Y %H:%M') }} · {{ match.venue }}</p>
-            {% if match.has_result %}
-                <div class="result-strip">Resultado: {{ match.home_score }} - {{ match.away_score }}</div>
-            {% endif %}
-            {% if prediction %}
-                <div class="prediction-strip">Tu prediccion: {{ prediction.pred_home_score }} - {{ prediction.pred_away_score }} · {{ prediction.points }} pts</div>
-            {% endif %}
-            <form method="post" action="{{ url_for('prediction.save_prediction', match_id=match.id) }}" class="prediction-form">
-                <input type="number" name="pred_home_score" min="0" value="{{ prediction.pred_home_score if prediction else '' }}" placeholder="0" {% if not match.can_predict %}disabled{% endif %} required>
-                <span>-</span>
-                <input type="number" name="pred_away_score" min="0" value="{{ prediction.pred_away_score if prediction else '' }}" placeholder="0" {% if not match.can_predict %}disabled{% endif %} required>
-                <button class="button small" type="submit" {% if not match.can_predict %}disabled{% endif %}>Guardar</button>
-            </form>
-        </article>
+        </section>
     {% else %}
         <p class="muted">Todavia no hay partidos.</p>
     {% endfor %}

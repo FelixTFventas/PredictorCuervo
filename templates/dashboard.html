@@ -16,7 +16,14 @@
     <div class="match-list compact">
         {% for match in next_matches %}
             <article class="match-row">
-                <div><strong>{{ match.home_team }} vs {{ match.away_team }}</strong><span>{{ match.starts_at.strftime('%d/%m/%Y %H:%M') }} · {{ match.venue }}</span></div>
+                <div>
+                    <strong class="row-teams">
+                        <span class="team-name"><span class="team-flag">{{ team_flag(match.home_team) }}</span>{{ match.home_team }}</span>
+                        <span class="versus-text">vs</span>
+                        <span class="team-name"><span class="team-flag">{{ team_flag(match.away_team) }}</span>{{ match.away_team }}</span>
+                    </strong>
+                    <span>{{ match.starts_at.strftime('%d/%m/%Y %H:%M') }} · {{ match.venue }}</span>
+                </div>
                 <span class="status {{ match.status_label|lower|replace(' ', '-') }}">{{ match.status_label }}</span>
             </article>
         {% else %}
