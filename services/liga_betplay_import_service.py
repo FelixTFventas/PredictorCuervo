@@ -8,7 +8,8 @@ from models.match import Match
 from services.competition_service import LIGA_BETPLAY_COMPETITION, LIGA_BETPLAY_SEASON
 
 
-LIGA_BETPLAY_CSV_PATH = r"C:\Users\JUNIOR\Downloads\liga_betplay_2026_14_partidos.csv"
+BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+LIGA_BETPLAY_CSV_PATH = os.path.join(BASE_DIR, "data", "liga_betplay_2026_14_partidos.csv")
 REQUIRED_COLUMNS = {"Fecha", "Hora", "Fase", "Local", "Visitante", "Estadio"}
 
 

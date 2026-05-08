@@ -1,0 +1,73 @@
+Partido,Fecha,Hora,Grupo,Local,Visitante,Sede,Fase
+1,2026-06-11,12:00,Grupo A,México,Sudáfrica,Ciudad de México,Fase de grupos
+2,2026-06-11,15:00,Grupo A,Corea del Sur,República Checa,Guadalajara,Fase de grupos
+3,2026-06-11,18:00,Grupo A,México,Corea del Sur,Monterrey,Fase de grupos
+4,2026-06-11,21:00,Grupo A,Sudáfrica,República Checa,Toronto,Fase de grupos
+5,2026-06-12,12:00,Grupo A,Sudáfrica,Corea del Sur,Vancouver,Fase de grupos
+6,2026-06-12,15:00,Grupo A,República Checa,México,Los Ángeles,Fase de grupos
+7,2026-06-12,18:00,Grupo B,Canadá,Bosnia y Herzegovina,Seattle,Fase de grupos
+8,2026-06-12,21:00,Grupo B,Catar,Suiza,Bahía de San Francisco,Fase de grupos
+9,2026-06-13,12:00,Grupo B,Canadá,Catar,Houston,Fase de grupos
+10,2026-06-13,15:00,Grupo B,Bosnia y Herzegovina,Suiza,Dallas,Fase de grupos
+11,2026-06-13,18:00,Grupo B,Bosnia y Herzegovina,Catar,Kansas City,Fase de grupos
+12,2026-06-13,21:00,Grupo B,Suiza,Canadá,Atlanta,Fase de grupos
+13,2026-06-14,12:00,Grupo C,Brasil,Marruecos,Miami,Fase de grupos
+14,2026-06-14,15:00,Grupo C,Haití,Escocia,Boston,Fase de grupos
+15,2026-06-14,18:00,Grupo C,Brasil,Haití,Filadelfia,Fase de grupos
+16,2026-06-14,21:00,Grupo C,Marruecos,Escocia,Nueva York/Nueva Jersey,Fase de grupos
+17,2026-06-15,12:00,Grupo C,Marruecos,Haití,Ciudad de México,Fase de grupos
+18,2026-06-15,15:00,Grupo C,Escocia,Brasil,Guadalajara,Fase de grupos
+19,2026-06-15,18:00,Grupo D,Estados Unidos,Paraguay,Monterrey,Fase de grupos
+20,2026-06-15,21:00,Grupo D,Australia,Turquía,Toronto,Fase de grupos
+21,2026-06-16,12:00,Grupo D,Estados Unidos,Australia,Vancouver,Fase de grupos
+22,2026-06-16,15:00,Grupo D,Paraguay,Turquía,Los Ángeles,Fase de grupos
+23,2026-06-16,18:00,Grupo D,Paraguay,Australia,Seattle,Fase de grupos
+24,2026-06-16,21:00,Grupo D,Turquía,Estados Unidos,Bahía de San Francisco,Fase de grupos
+25,2026-06-17,12:00,Grupo E,Alemania,Curazao,Houston,Fase de grupos
+26,2026-06-17,15:00,Grupo E,Costa de Marfil,Ecuador,Dallas,Fase de grupos
+27,2026-06-17,18:00,Grupo E,Alemania,Costa de Marfil,Kansas City,Fase de grupos
+28,2026-06-17,21:00,Grupo E,Curazao,Ecuador,Atlanta,Fase de grupos
+29,2026-06-18,12:00,Grupo E,Curazao,Costa de Marfil,Miami,Fase de grupos
+30,2026-06-18,15:00,Grupo E,Ecuador,Alemania,Boston,Fase de grupos
+31,2026-06-18,18:00,Grupo F,Países Bajos,Japón,Filadelfia,Fase de grupos
+32,2026-06-18,21:00,Grupo F,Suecia,Túnez,Nueva York/Nueva Jersey,Fase de grupos
+33,2026-06-19,12:00,Grupo F,Países Bajos,Suecia,Ciudad de México,Fase de grupos
+34,2026-06-19,15:00,Grupo F,Japón,Túnez,Guadalajara,Fase de grupos
+35,2026-06-19,18:00,Grupo F,Japón,Suecia,Monterrey,Fase de grupos
+36,2026-06-19,21:00,Grupo F,Túnez,Países Bajos,Toronto,Fase de grupos
+37,2026-06-20,12:00,Grupo G,Bélgica,Egipto,Vancouver,Fase de grupos
+38,2026-06-20,15:00,Grupo G,Irán,Nueva Zelanda,Los Ángeles,Fase de grupos
+39,2026-06-20,18:00,Grupo G,Bélgica,Irán,Seattle,Fase de grupos
+40,2026-06-20,21:00,Grupo G,Egipto,Nueva Zelanda,Bahía de San Francisco,Fase de grupos
+41,2026-06-21,12:00,Grupo G,Egipto,Irán,Houston,Fase de grupos
+42,2026-06-21,15:00,Grupo G,Nueva Zelanda,Bélgica,Dallas,Fase de grupos
+43,2026-06-21,18:00,Grupo H,España,Cabo Verde,Kansas City,Fase de grupos
+44,2026-06-21,21:00,Grupo H,Arabia Saudita,Uruguay,Atlanta,Fase de grupos
+45,2026-06-22,12:00,Grupo H,España,Arabia Saudita,Miami,Fase de grupos
+46,2026-06-22,15:00,Grupo H,Cabo Verde,Uruguay,Boston,Fase de grupos
+47,2026-06-22,18:00,Grupo H,Cabo Verde,Arabia Saudita,Filadelfia,Fase de grupos
+48,2026-06-22,21:00,Grupo H,Uruguay,España,Nueva York/Nueva Jersey,Fase de grupos
+49,2026-06-23,12:00,Grupo I,Francia,Senegal,Ciudad de México,Fase de grupos
+50,2026-06-23,15:00,Grupo I,Irak,Noruega,Guadalajara,Fase de grupos
+51,2026-06-23,18:00,Grupo I,Francia,Irak,Monterrey,Fase de grupos
+52,2026-06-23,21:00,Grupo I,Senegal,Noruega,Toronto,Fase de grupos
+53,2026-06-24,12:00,Grupo I,Senegal,Irak,Vancouver,Fase de grupos
+54,2026-06-24,15:00,Grupo I,Noruega,Francia,Los Ángeles,Fase de grupos
+55,2026-06-24,18:00,Grupo J,Argentina,Argelia,Seattle,Fase de grupos
+56,2026-06-24,21:00,Grupo J,Austria,Jordania,Bahía de San Francisco,Fase de grupos
+57,2026-06-25,12:00,Grupo J,Argentina,Austria,Houston,Fase de grupos
+58,2026-06-25,15:00,Grupo J,Argelia,Jordania,Dallas,Fase de grupos
+59,2026-06-25,18:00,Grupo J,Argelia,Austria,Kansas City,Fase de grupos
+60,2026-06-25,21:00,Grupo J,Jordania,Argentina,Atlanta,Fase de grupos
+61,2026-06-26,12:00,Grupo K,Portugal,RD Congo,Miami,Fase de grupos
+62,2026-06-26,15:00,Grupo K,Uzbekistán,Colombia,Boston,Fase de grupos
+63,2026-06-26,18:00,Grupo K,Portugal,Uzbekistán,Filadelfia,Fase de grupos
+64,2026-06-26,21:00,Grupo K,RD Congo,Colombia,Nueva York/Nueva Jersey,Fase de grupos
+65,2026-06-27,12:00,Grupo K,RD Congo,Uzbekistán,Ciudad de México,Fase de grupos
+66,2026-06-27,15:00,Grupo K,Colombia,Portugal,Guadalajara,Fase de grupos
+67,2026-06-27,18:00,Grupo L,Inglaterra,Croacia,Monterrey,Fase de grupos
+68,2026-06-27,21:00,Grupo L,Ghana,Panamá,Toronto,Fase de grupos
+69,2026-06-28,12:00,Grupo L,Inglaterra,Ghana,Vancouver,Fase de grupos
+70,2026-06-28,15:00,Grupo L,Croacia,Panamá,Los Ángeles,Fase de grupos
+71,2026-06-28,18:00,Grupo L,Croacia,Ghana,Seattle,Fase de grupos
+72,2026-06-28,21:00,Grupo L,Panamá,Inglaterra,Bahía de San Francisco,Fase de grupos

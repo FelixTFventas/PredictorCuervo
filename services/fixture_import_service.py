@@ -7,7 +7,8 @@ from models import db
 from models.match import Match
 
 
-FIXTURE_CSV_PATH = r"C:\Users\JUNIOR\Downloads\fixture_mundial_2026_72_partidos_validado.csv"
+BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+FIXTURE_CSV_PATH = os.path.join(BASE_DIR, "data", "fixture_mundial_2026_72_partidos_validado.csv")
 REQUIRED_COLUMNS = {"Partido", "Fecha", "Hora", "Grupo", "Local", "Visitante", "Sede", "Fase"}
 
 
