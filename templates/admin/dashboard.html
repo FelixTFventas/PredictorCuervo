@@ -7,18 +7,33 @@
     <p class="muted">Carga fixture y resultados manualmente. La estructura API queda lista para cuando tengas la key.</p>
 </section>
 <section class="metric-grid">
-    <article class="metric-card"><span>Partidos</span><strong>{{ total_matches }}</strong></article>
-    <article class="metric-card"><span>Finalizados</span><strong>{{ finished_matches }}</strong></article>
+    <article class="metric-card"><span>Mundial</span><strong>{{ world_cup_matches }}</strong></article>
+    <article class="metric-card"><span>Liga BetPlay</span><strong>{{ liga_betplay_matches_count }}</strong></article>
+    <article class="metric-card"><span>Finalizados Mundial</span><strong>{{ finished_matches }}</strong></article>
     <article class="metric-card"><span>Predicciones</span><strong>{{ predictions_count }}</strong></article>
-    <article class="metric-card"><span>API</span><strong>{{ "ON" if api_configured else "OFF" }}</strong></article>
 </section>
 <section class="admin-actions">
-    <a class="button primary" href="{{ url_for('admin.matches') }}">Gestionar partidos</a>
+    <a class="button primary" href="{{ url_for('admin.matches') }}">Gestionar Mundial</a>
+    <a class="button primary" href="{{ url_for('admin.liga_betplay_matches') }}">Gestionar Liga BetPlay</a>
     <a class="button ghost" href="{{ url_for('admin.new_match') }}">Nuevo partido</a>
     <form method="post" action="{{ url_for('admin.import_group_fixture_route') }}"><button class="button ghost" type="submit">Importar grupos 2026</button></form>
     <form method="post" action="{{ url_for('admin.create_knockout_placeholders_route') }}"><button class="button ghost" type="submit">Crear eliminatoria 2026</button></form>
+    <form method="post" action="{{ url_for('admin.import_liga_betplay_route') }}"><button class="button ghost" type="submit">Importar Liga BetPlay</button></form>
+    <a class="button ghost" href="{{ url_for('admin.import_liga_betplay_results_route') }}">Importar resultados Liga CSV</a>
     <form method="post" action="{{ url_for('admin.recalculate_points') }}"><button class="button ghost" type="submit">Recalcular puntos</button></form>
     <form method="post" action="{{ url_for('admin.sync_fixtures_route') }}"><button class="button ghost" type="submit">Sincronizar fixture API</button></form>
     <form method="post" action="{{ url_for('admin.sync_results_route') }}"><button class="button ghost" type="submit">Actualizar resultados API</button></form>
+</section>
+<section class="panel admin-api-panel">
+    <div class="section-title">
+        <h2>API-Football Liga BetPlay</h2>
+        <span>Diagnostico seguro</span>
+    </div>
+    <p class="muted">Usa estos botones para verificar la API antes de sincronizar resultados. No modifican partidos ni puntos.</p>
+    <div class="admin-actions">
+        <form method="post" action="{{ url_for('admin.api_football_status_route') }}"><button class="button ghost" type="submit">Probar API-Football</button></form>
+        <form method="post" action="{{ url_for('admin.api_football_colombia_leagues_route') }}"><button class="button ghost" type="submit">Buscar ligas Colombia</button></form>
+        <form method="post" action="{{ url_for('admin.api_football_liga_betplay_fixtures_route') }}"><button class="button ghost" type="submit">Probar fixtures Liga</button></form>
+    </div>
 </section>
 {% endblock %}

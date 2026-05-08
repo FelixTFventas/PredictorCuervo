@@ -1,14 +1,20 @@
 {% extends "base.html" %}
 {% from "macros/team.html" import team_name with context %}
+{% from "macros/club.html" import club_name %}
 {% block title %}Admin Partidos | Predictor Mundial Cuervo{% endblock %}
 {% block content %}
 <section class="page-head admin-headline">
     <div>
         <p class="eyebrow">Fixture admin</p>
-        <h1>Partidos</h1>
-        <p class="muted">Gestiona resultados y edita cruces desde un calendario separado por grupos y fases.</p>
+        <h1>{{ page_title or "Partidos" }}</h1>
+        <p class="muted">{{ page_description or "Gestiona resultados y edita cruces desde un calendario separado por grupos y fases." }}</p>
     </div>
-    <a class="button primary" href="{{ url_for('admin.new_match') }}">Nuevo partido</a>
+    <div class="admin-headline-actions">
+        {% if team_display == "clubs" %}
+            <a class="button ghost" href="{{ url_for('admin.import_liga_betplay_results_route') }}">Importar resultados CSV</a>
+        {% endif %}
+        <a class="button primary" href="{{ url_for('admin.new_match') }}">Nuevo partido</a>
+    </div>
 </section>
 <section class="fixture-board admin-fixture-board">
     {% for group_name, matches in grouped_matches.items() %}
@@ -29,9 +35,9 @@
                                 <span class="status {{ match.status_label|lower|replace(' ', '-') }}">{{ "Pendiente" if match.has_placeholder_teams else match.status_label }}</span>
                             </div>
                             <h2 class="admin-teams-title">
-                                {{ team_name(match.home_team) }}
+                                {{ club_name(match.home_team) if team_display == "clubs" else team_name(match.home_team) }}
                                 <span class="versus-text">vs</span>
-                                {{ team_name(match.away_team) }}
+                                {{ club_name(match.away_team) if team_display == "clubs" else team_name(match.away_team) }}
                             </h2>
                             <p class="muted">{{ match.round_name }} · {{ match.venue }}</p>
                             {% if match.has_result %}<p class="result-strip">Resultado: {{ match.home_score }} - {{ match.away_score }}</p>{% endif %}
@@ -39,6 +45,7 @@
                         <div class="admin-match-tools">
                             <a class="button small ghost" href="{{ url_for('admin.edit_match', match_id=match.id) }}">Editar</a>
                             <form method="post" action="{{ url_for('admin.save_result', match_id=match.id) }}" class="result-form">
+                                <input type="hidden" name="return_to" value="{{ return_to or 'admin.matches' }}">
                                 <input type="number" name="home_score" min="0" value="{{ match.home_score if match.home_score is not none else '' }}" placeholder="Local" required>
                                 <input type="number" name="away_score" min="0" value="{{ match.away_score if match.away_score is not none else '' }}" placeholder="Visitante" required>
                                 <button class="button small" type="submit">Guardar resultado</button>

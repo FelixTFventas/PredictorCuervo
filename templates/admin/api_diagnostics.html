@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}{{ title }} | Predictor Mundial Cuervo{% endblock %}
+{% block content %}
+<section class="page-head admin-headline">
+    <div>
+        <p class="eyebrow">Diagnostico API</p>
+        <h1>{{ title }}</h1>
+        <p class="muted">Esta pantalla solo consulta API-Football. No actualiza resultados ni puntos.</p>
+    </div>
+    <a class="button primary" href="{{ url_for('admin.dashboard') }}">Volver admin</a>
+</section>
+<section class="panel api-diagnostic-panel">
+    <div class="flash {{ 'success' if result.ok else 'error' }}">{{ result.message }}</div>
+    {% if rows %}
+        <div class="api-table" style="--api-columns: {{ columns|length }};">
+            <div class="api-row head">
+                {% for column in columns %}<span>{{ column }}</span>{% endfor %}
+            </div>
+            {% for row in rows %}
+                <div class="api-row">
+                    {% for column in columns %}<span>{{ row.get(column) or '-' }}</span>{% endfor %}
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p class="muted">No hay filas para mostrar.</p>
+    {% endif %}
+</section>
+{% endblock %}

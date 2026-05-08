@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block title %}Importar resultados Liga BetPlay | Predictor Mundial Cuervo{% endblock %}
+{% block content %}
+<section class="page-head admin-headline">
+    <div>
+        <p class="eyebrow">Resultados CSV</p>
+        <h1>Importar Liga BetPlay</h1>
+        <p class="muted">Sube un CSV con resultados. Solo actualiza partidos de Liga BetPlay y recalcula sus puntos.</p>
+    </div>
+    <a class="button primary" href="{{ url_for('admin.liga_betplay_matches') }}">Volver a Liga</a>
+</section>
+
+<section class="panel import-panel">
+    <div class="section-title">
+        <h2>Archivo CSV</h2>
+        <span>api_id, goles, estado</span>
+    </div>
+    <form method="post" enctype="multipart/form-data" class="form-card import-form">
+        <label>
+            CSV de resultados
+            <input type="file" name="results_csv" accept=".csv,text/csv" required>
+        </label>
+        <button class="button primary" type="submit">Importar resultados</button>
+    </form>
+    <div class="csv-example">
+        <p class="muted">Formato esperado:</p>
+        <pre><code>api_id,home_score,away_score,status
+liga-betplay-2026-001,2,1,finished
+liga-betplay-2026-002,0,0,finished</code></pre>
+    </div>
+</section>
+
+{% if summary %}
+    <section class="panel import-summary">
+        <div class="section-title">
+            <h2>Resumen</h2>
+            <span>{{ "OK" if summary.ok else "Revisar" }}</span>
+        </div>
+        <div class="metric-grid compact-metrics">
+            <article class="metric-card"><span>Actualizados</span><strong>{{ summary.updated_matches }}</strong></article>
+            <article class="metric-card"><span>Predicciones recalculadas</span><strong>{{ summary.recalculated_predictions }}</strong></article>
+            <article class="metric-card"><span>Errores</span><strong>{{ summary.errors|length }}</strong></article>
+        </div>
+        {% if summary.errors %}
+            <div class="error-list">
+                {% for error in summary.errors %}
+                    <div class="flash error">{{ error }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </section>
+{% endif %}
+{% endblock %}

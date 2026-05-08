@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% from "macros/club.html" import club_name %}
+{% block title %}Liga BetPlay | Predictor Mundial Cuervo{% endblock %}
+{% block content %}
+<section class="page-head liga-hero">
+    <p class="eyebrow">Competencia independiente</p>
+    <h1>Liga BetPlay</h1>
+    <p class="muted">Fases finales 2026. Ranking, partidos y puntos separados completamente del Mundial.</p>
+    <div class="hero-actions">
+        <a class="button primary" href="{{ url_for('liga_betplay.matches') }}">Predecir Liga</a>
+        <a class="button ghost" href="{{ url_for('liga_betplay.ranking') }}">Ranking Liga</a>
+    </div>
+</section>
+<section class="metric-grid">
+    <article class="metric-card"><span>Partidos Liga</span><strong>{{ matches_count }}</strong></article>
+    <article class="metric-card"><span>Finalizados</span><strong>{{ finished_count }}</strong></article>
+    <article class="metric-card"><span>Formato</span><strong>KO</strong></article>
+    <article class="metric-card"><span>Ranking</span><strong>COL</strong></article>
+</section>
+{% if next_match %}
+    <section class="panel">
+        <div class="section-title"><h2>Proximo partido</h2><a href="{{ url_for('liga_betplay.matches') }}">Ver todos</a></div>
+        <article class="match-row">
+            <div>
+                <strong class="row-teams">{{ club_name(next_match.home_team) }}<span class="versus-text">vs</span>{{ club_name(next_match.away_team) }}</strong>
+                <span>{{ next_match.starts_at.strftime('%d/%m/%Y %H:%M') }} · {{ next_match.venue }}</span>
+            </div>
+            <span class="status {{ next_match.status_label|lower|replace(' ', '-') }}">{{ next_match.status_label }}</span>
+        </article>
+    </section>
+{% endif %}
+{% endblock %}

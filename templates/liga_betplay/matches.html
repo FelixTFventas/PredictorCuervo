@@ -1,18 +1,22 @@
 {% extends "base.html" %}
-{% from "macros/team.html" import team_name with context %}
-{% block title %}Partidos | Predictor Mundial Cuervo{% endblock %}
+{% from "macros/club.html" import club_name %}
+{% block title %}Partidos Liga BetPlay | Predictor Mundial Cuervo{% endblock %}
 {% block content %}
-<section class="page-head">
-    <p class="eyebrow">Fixture</p>
-    <h1>{{ page_title or "Predicciones" }}</h1>
-    <p class="muted">{{ page_description or "Partidos ordenados por grupos y fases. Los cruces pendientes se habilitan cuando tengan equipos definidos." }}</p>
+<section class="page-head liga-hero">
+    <p class="eyebrow">Liga BetPlay</p>
+    <h1>Fases finales</h1>
+    <p class="muted">Predicciones independientes del Mundial. Semifinales y finales se habilitan cuando se confirmen los equipos.</p>
+    <div class="hero-actions">
+        <a class="button ghost" href="{{ url_for('liga_betplay.index') }}">Resumen Liga</a>
+        <a class="button ghost" href="{{ url_for('liga_betplay.ranking') }}">Ranking Liga</a>
+    </div>
 </section>
-<section class="fixture-board">
+<section class="fixture-board liga-board">
     {% for group_name, matches in grouped_matches.items() %}
-        <section class="group-section">
+        <section class="group-section liga-section">
             <div class="group-header">
                 <div>
-                    <span class="group-kicker">{{ "Fase" if group_name not in ["Grupo A", "Grupo B", "Grupo C", "Grupo D", "Grupo E", "Grupo F", "Grupo G", "Grupo H", "Grupo I", "Grupo J", "Grupo K", "Grupo L"] else "Grupo" }}</span>
+                    <span class="group-kicker">Fase</span>
                     <h2>{{ group_name }}</h2>
                 </div>
                 <span class="group-count">{{ matches|length }} partidos</span>
@@ -26,9 +30,9 @@
                             <span class="status {{ match.status_label|lower|replace(' ', '-') }}">{{ "Pendiente" if match.has_placeholder_teams else match.status_label }}</span>
                         </div>
                         <div class="teams">
-                            <strong>{{ team_name(match.home_team) }}</strong>
+                            <strong>{{ club_name(match.home_team) }}</strong>
                             <span>vs</span>
-                            <strong>{{ team_name(match.away_team, "end") }}</strong>
+                            <strong>{{ club_name(match.away_team, "end") }}</strong>
                         </div>
                         <p class="muted">{{ match.venue }} · {{ match.round_name }}</p>
                         {% if match.has_result %}
@@ -40,7 +44,7 @@
                             <div class="prediction-strip muted-strip">Predicciones bloqueadas hasta confirmar equipos.</div>
                         {% endif %}
                         <form method="post" action="{{ url_for('prediction.save_prediction', match_id=match.id) }}" class="prediction-form">
-                            <input type="hidden" name="return_to" value="{{ return_to or 'match.matches' }}">
+                            <input type="hidden" name="return_to" value="{{ return_to }}">
                             <input type="number" name="pred_home_score" min="0" value="{{ prediction.pred_home_score if prediction else '' }}" placeholder="0" {% if not match.can_predict %}disabled{% endif %} required>
                             <span>-</span>
                             <input type="number" name="pred_away_score" min="0" value="{{ prediction.pred_away_score if prediction else '' }}" placeholder="0" {% if not match.can_predict %}disabled{% endif %} required>
@@ -51,7 +55,7 @@
             </div>
         </section>
     {% else %}
-        <p class="muted">Todavia no hay partidos.</p>
+        <p class="muted">Todavia no hay partidos de Liga BetPlay. Importalos desde Admin.</p>
     {% endfor %}
 </section>
 {% endblock %}

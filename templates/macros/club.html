@@ -1,0 +1,6 @@
+{% macro club_name(team, align="start") %}
+    <span class="team-name {% if align == 'end' %}team-name-away{% endif %}">
+        <span class="club-badge">{{ team[:2].upper() }}</span>
+        <span>{{ team }}</span>
+    </span>
+{% endmacro %}

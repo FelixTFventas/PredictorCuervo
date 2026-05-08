@@ -9,6 +9,15 @@ from services.points_service import update_prediction_points
 
 prediction_bp = Blueprint("prediction", __name__)
 
+ALLOWED_RETURN_ENDPOINTS = {"match.matches", "liga_betplay.matches"}
+
+
+def prediction_redirect():
+    return_to = request.form.get("return_to", "match.matches")
+    if return_to not in ALLOWED_RETURN_ENDPOINTS:
+        return_to = "match.matches"
+    return redirect(url_for(return_to))
+
 
 @prediction_bp.route("/predictions/<int:match_id>", methods=["POST"])
 @login_required
@@ -16,18 +25,18 @@ def save_prediction(match_id):
     match = Match.query.get_or_404(match_id)
     if not match.can_predict:
         flash("Este partido ya comenzo. La prediccion esta bloqueada.", "error")
-        return redirect(url_for("match.matches"))
+        return prediction_redirect()
 
     try:
         pred_home_score = int(request.form.get("pred_home_score", ""))
         pred_away_score = int(request.form.get("pred_away_score", ""))
     except ValueError:
         flash("Ingresa goles validos.", "error")
-        return redirect(url_for("match.matches"))
+        return prediction_redirect()
 
     if pred_home_score < 0 or pred_away_score < 0:
         flash("Los goles no pueden ser negativos.", "error")
-        return redirect(url_for("match.matches"))
+        return prediction_redirect()
 
     prediction = Prediction.query.filter_by(user_id=current_user.id, match_id=match.id).first()
     if prediction is None:
@@ -40,4 +49,4 @@ def save_prediction(match_id):
     db.session.commit()
 
     flash("Prediccion guardada.", "success")
-    return redirect(url_for("match.matches"))
+    return prediction_redirect()

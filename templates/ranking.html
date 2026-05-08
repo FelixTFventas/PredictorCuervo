@@ -1,9 +1,9 @@
 {% extends "base.html" %}
-{% block title %}Ranking | Predictor Mundial Cuervo{% endblock %}
+{% block title %}{{ page_title or "Ranking" }} | Predictor Mundial Cuervo{% endblock %}
 {% block content %}
 <section class="page-head">
-    <p class="eyebrow">Tabla general</p>
-    <h1>Ranking Cuervo</h1>
+    <p class="eyebrow">{{ page_eyebrow or "Tabla general" }}</p>
+    <h1>{{ page_title or "Ranking Cuervo" }}</h1>
 </section>
 <section class="ranking-table">
     <div class="ranking-row head"><span>#</span><span>Jugador</span><span>Pts</span><span>Pred.</span><span>Exactos</span></div>

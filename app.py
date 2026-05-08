@@ -5,6 +5,7 @@ from data.matches_seed import seed_matches
 from models import db, login_manager
 from routes.auth_routes import auth_bp
 from routes.admin_routes import admin_bp
+from routes.liga_betplay_routes import liga_betplay_bp
 from routes.match_routes import match_bp
 from routes.prediction_routes import prediction_bp
 from routes.ranking_routes import ranking_bp
@@ -22,6 +23,7 @@ def create_app():
 
     app.register_blueprint(admin_bp)
     app.register_blueprint(auth_bp)
+    app.register_blueprint(liga_betplay_bp)
     app.register_blueprint(match_bp)
     app.register_blueprint(prediction_bp)
     app.register_blueprint(ranking_bp)

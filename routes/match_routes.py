@@ -1,40 +1,24 @@
-from sqlalchemy import func
-from collections import OrderedDict
-
 from flask import Blueprint, render_template
 from flask_login import current_user, login_required
 
 from models.match import Match
 from models.prediction import Prediction
-from models.user import User
+from services.competition_service import WORLD_CUP_COMPETITION, group_matches, ranking_rows_for_competition
 
 
 match_bp = Blueprint("match", __name__)
 
 
-def group_matches(matches):
-    grouped = OrderedDict()
-    for match in matches:
-        key = match.group_name if match.group_name != "Eliminacion directa" else match.stage
-        grouped.setdefault(key, []).append(match)
-    return grouped
-
-
 @match_bp.route("/dashboard")
 @login_required
 def dashboard():
-    predictions = Prediction.query.filter_by(user_id=current_user.id).all()
+    predictions = Prediction.query.join(Match).filter(Prediction.user_id == current_user.id, Match.competition == WORLD_CUP_COMPETITION).all()
     total_points = sum(prediction.points or 0 for prediction in predictions)
     exact_hits = sum(1 for prediction in predictions if prediction.points == 3)
-    next_matches = Match.query.order_by(Match.starts_at.asc()).limit(3).all()
+    next_matches = Match.query.filter_by(competition=WORLD_CUP_COMPETITION).order_by(Match.starts_at.asc()).limit(3).all()
 
-    ranking = (
-        User.query.outerjoin(Prediction)
-        .group_by(User.id)
-        .order_by(func.coalesce(func.sum(Prediction.points), 0).desc(), User.username.asc())
-        .all()
-    )
-    position = next((index + 1 for index, user in enumerate(ranking) if user.id == current_user.id), None)
+    ranking = ranking_rows_for_competition(WORLD_CUP_COMPETITION)
+    position = next((index + 1 for index, row in enumerate(ranking) if row[0].id == current_user.id), None)
 
     return render_template(
         "dashboard.html",
@@ -49,13 +33,20 @@ def dashboard():
 @match_bp.route("/matches")
 @login_required
 def matches():
-    matches_list = Match.query.order_by(Match.starts_at.asc()).all()
+    matches_list = Match.query.filter_by(competition=WORLD_CUP_COMPETITION).order_by(Match.starts_at.asc()).all()
     grouped_matches = group_matches(matches_list)
     user_predictions = {
         prediction.match_id: prediction
         for prediction in Prediction.query.filter_by(user_id=current_user.id).all()
     }
-    return render_template("matches.html", grouped_matches=grouped_matches, user_predictions=user_predictions)
+    return render_template(
+        "matches.html",
+        grouped_matches=grouped_matches,
+        user_predictions=user_predictions,
+        page_title="Predicciones Mundial",
+        page_description="Partidos del Mundial ordenados por grupos y fases. Los cruces pendientes se habilitan cuando tengan equipos definidos.",
+        return_to="match.matches",
+    )
 
 
 @match_bp.route("/profile")
