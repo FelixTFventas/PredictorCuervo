@@ -38,7 +38,8 @@ def create_app():
 
     with app.app_context():
         db.create_all()
-        ensure_sqlite_schema()
+        if db.engine.name == "sqlite":
+            ensure_sqlite_schema()
         ensure_admin_user(app.config.get("ADMIN_EMAIL"))
         seed_matches()
 
