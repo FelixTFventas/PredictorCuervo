@@ -161,6 +161,7 @@ select:focus { outline: 2px solid rgba(32, 211, 255, 0.32); }
 .match-row { display: flex; justify-content: space-between; align-items: center; gap: 1rem; padding: 1rem; border: 1px solid var(--line); border-radius: 1.1rem; background: rgba(255,255,255,0.045); }
 .match-row span { display: block; color: var(--muted); margin-top: 0.25rem; }
 .row-teams { display: flex; flex-wrap: wrap; align-items: center; gap: 0.45rem; }
+.match-row .row-teams span { color: inherit; margin-top: 0; }
 
 .matches-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
 .fixture-board { display: grid; gap: 1.35rem; }
@@ -212,10 +213,18 @@ select:focus { outline: 2px solid rgba(32, 211, 255, 0.32); }
 .teams strong:last-child { text-align: right; }
 .teams span { color: var(--gold); font-size: 1.2rem; font-family: "Manrope", sans-serif; font-weight: 900; }
 .teams .team-name { font-family: "Bebas Neue", sans-serif; font-size: inherit; font-weight: inherit; color: inherit; }
-.teams .team-flag { font-family: "Manrope", sans-serif; font-size: 0.72em; }
+.teams .team-flag-placeholder { font-family: "Manrope", sans-serif; font-size: 0.72em; }
 .team-name { display: inline-flex; align-items: center; gap: 0.45rem; min-width: 0; }
 .team-name-away { justify-content: flex-end; }
-.team-flag { flex: 0 0 auto; line-height: 1; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.25)); }
+.team-flag-img {
+    flex: 0 0 auto;
+    width: 24px;
+    height: 18px;
+    object-fit: cover;
+    border-radius: 3px;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.28);
+}
+.team-flag-placeholder { flex: 0 0 auto; min-width: 24px; line-height: 1; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.25)); text-align: center; }
 .versus-text { color: var(--gold); font-size: 0.85em; }
 .result-strip, .prediction-strip { margin-top: 0.8rem; padding: 0.7rem 0.9rem; border-radius: 0.9rem; background: rgba(255,255,255,0.07); font-weight: 900; }
 .muted-strip { color: var(--muted); border: 1px dashed rgba(255,255,255,0.18); }

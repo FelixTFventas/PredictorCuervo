@@ -10,7 +10,7 @@ from routes.prediction_routes import prediction_bp
 from routes.ranking_routes import ranking_bp
 from services.admin_service import ensure_admin_user
 from services.schema_service import ensure_sqlite_schema
-from services.team_flags import team_flag
+from services.team_flags import team_flag, team_flag_fallback
 
 
 def create_app():
@@ -32,7 +32,7 @@ def create_app():
 
     @app.context_processor
     def inject_team_helpers():
-        return {"team_flag": team_flag}
+        return {"team_flag": team_flag, "team_flag_fallback": team_flag_fallback}
 
     with app.app_context():
         db.create_all()

@@ -1,0 +1,11 @@
+{% macro team_name(team, align="start") %}
+    {% set flag = team_flag(team) %}
+    <span class="team-name {% if align == 'end' %}team-name-away{% endif %}">
+        {% if flag %}
+            <img class="team-flag-img" src="{{ flag.url }}" srcset="{{ flag.url }} 1x, https://flagcdn.com/48x36/{{ flag.code }}.png 2x" width="24" height="18" alt="Bandera de {{ team }}" loading="lazy">
+        {% else %}
+            <span class="team-flag-placeholder">{{ team_flag_fallback(team) }}</span>
+        {% endif %}
+        <span>{{ team }}</span>
+    </span>
+{% endmacro %}

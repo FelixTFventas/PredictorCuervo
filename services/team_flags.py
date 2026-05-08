@@ -1,72 +1,37 @@
-TEAM_FLAGS = {
-    "Alemania": "🇩🇪",
-    "Arabia Saudita": "🇸🇦",
-    "Argelia": "🇩🇿",
-    "Argentina": "🇦🇷",
-    "Australia": "🇦🇺",
-    "Austria": "🇦🇹",
-    "Belgica": "🇧🇪",
-    "Bélgica": "🇧🇪",
-    "Bosnia y Herzegovina": "🇧🇦",
-    "Brasil": "🇧🇷",
-    "Cabo Verde": "🇨🇻",
-    "Canada": "🇨🇦",
-    "Canadá": "🇨🇦",
-    "Catar": "🇶🇦",
-    "Colombia": "🇨🇴",
-    "Corea del Sur": "🇰🇷",
-    "Costa de Marfil": "🇨🇮",
-    "Croacia": "🇭🇷",
-    "Curazao": "🇨🇼",
-    "Ecuador": "🇪🇨",
-    "Egipto": "🇪🇬",
-    "Escocia": "🏴",
-    "Espana": "🇪🇸",
-    "España": "🇪🇸",
-    "Estados Unidos": "🇺🇸",
-    "Francia": "🇫🇷",
-    "Ghana": "🇬🇭",
-    "Haiti": "🇭🇹",
-    "Haití": "🇭🇹",
-    "Inglaterra": "🇬🇧",
-    "Irak": "🇮🇶",
-    "Iran": "🇮🇷",
-    "Irán": "🇮🇷",
-    "Japon": "🇯🇵",
-    "Japón": "🇯🇵",
-    "Jordania": "🇯🇴",
-    "Marruecos": "🇲🇦",
-    "Mexico": "🇲🇽",
-    "México": "🇲🇽",
-    "Noruega": "🇳🇴",
-    "Nueva Zelanda": "🇳🇿",
-    "Paises Bajos": "🇳🇱",
-    "Países Bajos": "🇳🇱",
-    "Panama": "🇵🇦",
-    "Panamá": "🇵🇦",
-    "Paraguay": "🇵🇾",
-    "Portugal": "🇵🇹",
-    "RD Congo": "🇨🇩",
-    "Republica Checa": "🇨🇿",
-    "República Checa": "🇨🇿",
-    "Senegal": "🇸🇳",
-    "Sudafrica": "🇿🇦",
-    "Sudáfrica": "🇿🇦",
-    "Suecia": "🇸🇪",
-    "Suiza": "🇨🇭",
-    "Tunez": "🇹🇳",
-    "Túnez": "🇹🇳",
-    "Turquia": "🇹🇷",
-    "Turquía": "🇹🇷",
-    "Uruguay": "🇺🇾",
-    "Uzbekistan": "🇺🇿",
-    "Uzbekistán": "🇺🇿",
-}
+import csv
+import os
+from functools import lru_cache
+
+
+BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+TEAM_FLAGS_CSV = os.path.join(BASE_DIR, "data", "team_flags.csv")
+PLACEHOLDER_TERMS = ("Clasificado", "Ganador", "Perdedor")
+
+
+@lru_cache(maxsize=1)
+def load_team_flags():
+    flags = {}
+    with open(TEAM_FLAGS_CSV, encoding="utf-8-sig", newline="") as flags_file:
+        for row in csv.DictReader(flags_file):
+            team = row.get("team", "").strip()
+            if team:
+                flags[team] = {
+                    "code": row.get("flag_code", "").strip(),
+                    "url": row.get("flag_url", "").strip(),
+                    "svg_url": row.get("flag_svg_url", "").strip(),
+                }
+    return flags
+
+
+def is_placeholder_team(team_name):
+    return not team_name or any(term in team_name for term in PLACEHOLDER_TERMS)
 
 
 def team_flag(team_name):
-    if not team_name:
-        return "🏆"
-    if any(term in team_name for term in ("Clasificado", "Ganador", "Perdedor")):
-        return "🏆"
-    return TEAM_FLAGS.get(team_name, "🏳️")
+    if is_placeholder_team(team_name):
+        return None
+    return load_team_flags().get(team_name)
+
+
+def team_flag_fallback(team_name):
+    return "🏆" if is_placeholder_team(team_name) else "🏳️"

@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% from "macros/team.html" import team_name with context %}
 {% block title %}Dashboard | Predictor Mundial Cuervo{% endblock %}
 {% block content %}
 <section class="page-head">
@@ -18,9 +19,9 @@
             <article class="match-row">
                 <div>
                     <strong class="row-teams">
-                        <span class="team-name"><span class="team-flag">{{ team_flag(match.home_team) }}</span>{{ match.home_team }}</span>
+                        {{ team_name(match.home_team) }}
                         <span class="versus-text">vs</span>
-                        <span class="team-name"><span class="team-flag">{{ team_flag(match.away_team) }}</span>{{ match.away_team }}</span>
+                        {{ team_name(match.away_team) }}
                     </strong>
                     <span>{{ match.starts_at.strftime('%d/%m/%Y %H:%M') }} · {{ match.venue }}</span>
                 </div>

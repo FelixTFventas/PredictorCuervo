@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% from "macros/team.html" import team_name with context %}
 {% block title %}Partidos | Predictor Mundial Cuervo{% endblock %}
 {% block content %}
 <section class="page-head">
@@ -25,9 +26,9 @@
                             <span class="status {{ match.status_label|lower|replace(' ', '-') }}">{{ "Pendiente" if match.has_placeholder_teams else match.status_label }}</span>
                         </div>
                         <div class="teams">
-                            <strong><span class="team-name"><span class="team-flag">{{ team_flag(match.home_team) }}</span>{{ match.home_team }}</span></strong>
+                            <strong>{{ team_name(match.home_team) }}</strong>
                             <span>vs</span>
-                            <strong><span class="team-name team-name-away"><span class="team-flag">{{ team_flag(match.away_team) }}</span>{{ match.away_team }}</span></strong>
+                            <strong>{{ team_name(match.away_team, "end") }}</strong>
                         </div>
                         <p class="muted">{{ match.venue }} · {{ match.round_name }}</p>
                         {% if match.has_result %}
