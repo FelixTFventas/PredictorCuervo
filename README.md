@@ -60,6 +60,32 @@ set DATABASE_URL=postgresql://usuario:clave@host:5432/base
 
 En produccion (`APP_ENV=production` o `FLASK_ENV=production`) `SECRET_KEY` es obligatoria.
 
+## Despliegue
+
+Para produccion usa PostgreSQL con `DATABASE_URL`. SQLite solo se recomienda para desarrollo local; si no defines `DATABASE_URL`, la app intentara crear `instance/database.db` dentro del contenedor y algunos hostings pueden bloquearlo o perderlo en cada redeploy.
+
+Variables minimas:
+
+```bash
+DATABASE_URL=postgresql://usuario:clave@host:5432/base
+SECRET_KEY=una-clave-larga-y-segura
+APP_ENV=production
+APP_TIMEZONE=America/Bogota
+FLASK_DEBUG=0
+```
+
+Comando de inicio recomendado en Linux/hosting:
+
+```bash
+python -m flask db upgrade && gunicorn app:app
+```
+
+Si el hosting no permite ejecutar migraciones en el start command, ejecuta antes del despliegue:
+
+```bash
+FLASK_APP=app.py python -m flask db upgrade
+```
+
 ## Migraciones
 
 El proyecto usa Flask-Migrate/Alembic. Para una base nueva, ejecuta:

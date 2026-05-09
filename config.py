@@ -10,7 +10,12 @@ def _database_url():
         return "postgresql+psycopg://" + url.removeprefix("postgres://")
     if url and url.startswith("postgresql://"):
         return "postgresql+psycopg://" + url.removeprefix("postgresql://")
-    return url or "sqlite:///" + os.path.join(BASE_DIR, "instance", "database.db")
+    if url:
+        return url
+
+    instance_dir = os.path.join(BASE_DIR, "instance")
+    os.makedirs(instance_dir, exist_ok=True)
+    return "sqlite:///" + os.path.join(instance_dir, "database.db")
 
 
 def _is_enabled(value):

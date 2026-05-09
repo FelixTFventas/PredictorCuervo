@@ -9,6 +9,7 @@ from models.prediction import Prediction
 from services.competition_service import LIGA_BETPLAY_COMPETITION, LIGA_BETPLAY_SEASON, WORLD_CUP_COMPETITION, group_matches
 from services.api_football_service import check_api_status, fetch_colombia_leagues, fetch_liga_betplay_fixtures_preview
 from services.fixture_import_service import import_group_fixture
+from services.forebet_result_service import sync_liga_betplay_results_from_forebet
 from services.knockout_fixture_service import create_knockout_placeholders
 from services.liga_betplay_import_service import import_liga_betplay_fixture
 from services.liga_betplay_results_import_service import import_liga_betplay_results_csv
@@ -220,6 +221,18 @@ def import_liga_betplay_results_route():
         summary = import_liga_betplay_results_csv(request.files.get("results_csv"))
         flash(summary.message, "success" if summary.ok else "error")
     return render_template("admin/import_liga_betplay_results.html", summary=summary)
+
+
+@admin_bp.route("/liga-betplay/sync-forebet-results", methods=["POST"])
+@admin_required
+def sync_liga_betplay_forebet_results_route():
+    summary = sync_liga_betplay_results_from_forebet()
+    flash(summary.message, "success" if summary.ok else "error")
+    for skipped in summary.skipped[:3]:
+        flash(skipped, "error")
+    if len(summary.skipped) > 3:
+        flash(f"{len(summary.skipped) - 3} partidos adicionales no fueron confirmados.", "error")
+    return redirect(url_for("admin.liga_betplay_matches" if summary.updated_matches else "admin.dashboard"))
 
 
 @admin_bp.route("/api-football/status", methods=["POST"])

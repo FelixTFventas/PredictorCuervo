@@ -19,6 +19,7 @@
     <form method="post" action="{{ url_for('admin.import_group_fixture_route') }}"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><button class="button ghost" type="submit">Importar grupos 2026</button></form>
     <form method="post" action="{{ url_for('admin.create_knockout_placeholders_route') }}"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><button class="button ghost" type="submit">Crear eliminatoria 2026</button></form>
     <form method="post" action="{{ url_for('admin.import_liga_betplay_route') }}"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><button class="button ghost" type="submit">Importar Liga BetPlay</button></form>
+    <form method="post" action="{{ url_for('admin.sync_liga_betplay_forebet_results_route') }}"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><button class="button ghost" type="submit">Consultar Forebet Liga</button></form>
     <a class="button ghost" href="{{ url_for('admin.import_liga_betplay_results_route') }}">Importar resultados Liga CSV</a>
     <form method="post" action="{{ url_for('admin.recalculate_points') }}"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><button class="button ghost" type="submit">Recalcular puntos</button></form>
     <form method="post" action="{{ url_for('admin.sync_fixtures_route') }}"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><button class="button ghost" type="submit">Sincronizar fixture API</button></form>
