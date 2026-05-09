@@ -77,8 +77,10 @@ FLASK_DEBUG=0
 Comando de inicio recomendado en Linux/hosting:
 
 ```bash
-python -m flask db upgrade && gunicorn app:app
+python -m flask db upgrade && gunicorn app:app --bind 0.0.0.0:$PORT
 ```
+
+En Railway, configura ese valor en `Settings > Deploy > Start Command`. Railway asigna la variable `PORT`, por eso el servicio debe escuchar en `0.0.0.0:$PORT`.
 
 Si el hosting no permite ejecutar migraciones en el start command, ejecuta antes del despliegue:
 

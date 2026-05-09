@@ -1,7 +1,9 @@
+import os
+import sys
+
 from flask import Flask, render_template
 from flask_migrate import Migrate
 from flask_wtf import CSRFProtect
-import sys
 
 from config import Config
 from data.matches_seed import seed_matches
@@ -67,4 +69,4 @@ app = create_app()
 
 
 if __name__ == "__main__":
-    app.run(debug=app.config["DEBUG"])
+    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)), debug=app.config["DEBUG"])
