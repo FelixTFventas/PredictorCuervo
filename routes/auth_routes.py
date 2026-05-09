@@ -1,5 +1,5 @@
 from flask import Blueprint, current_app, flash, redirect, render_template, request, url_for
-from flask_login import current_user, login_user, logout_user
+from flask_login import current_user, login_required, login_user, logout_user
 
 from models import db
 from models.user import User
@@ -60,7 +60,8 @@ def login():
     return render_template("login.html")
 
 
-@auth_bp.route("/logout")
+@auth_bp.route("/logout", methods=["POST"])
+@login_required
 def logout():
     logout_user()
     flash("Sesion cerrada.", "success")

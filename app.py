@@ -1,4 +1,7 @@
 from flask import Flask, render_template
+from flask_migrate import Migrate
+from flask_wtf import CSRFProtect
+import sys
 
 from config import Config
 from data.matches_seed import seed_matches
@@ -12,6 +15,11 @@ from routes.ranking_routes import ranking_bp
 from services.admin_service import ensure_admin_user
 from services.schema_service import ensure_sqlite_schema
 from services.team_flags import team_flag, team_flag_fallback
+from services.time_service import format_local_datetime
+
+
+csrf = CSRFProtect()
+migrate = Migrate()
 
 
 def create_app():
@@ -20,6 +28,8 @@ def create_app():
 
     db.init_app(app)
     login_manager.init_app(app)
+    csrf.init_app(app)
+    migrate.init_app(app, db)
 
     app.register_blueprint(admin_bp)
     app.register_blueprint(auth_bp)
@@ -36,18 +46,25 @@ def create_app():
     def inject_team_helpers():
         return {"team_flag": team_flag, "team_flag_fallback": team_flag_fallback}
 
-    with app.app_context():
-        db.create_all()
-        if db.engine.name == "sqlite":
-            ensure_sqlite_schema()
-        ensure_admin_user(app.config.get("ADMIN_EMAIL"))
-        seed_matches()
+    app.jinja_env.filters["local_datetime"] = format_local_datetime
+
+    if not is_migration_command():
+        with app.app_context():
+            db.create_all()
+            if db.engine.name == "sqlite":
+                ensure_sqlite_schema()
+            ensure_admin_user(app.config.get("ADMIN_EMAIL"))
+            seed_matches()
 
     return app
+
+
+def is_migration_command():
+    return "db" in sys.argv
 
 
 app = create_app()
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=app.config["DEBUG"])

@@ -1,4 +1,3 @@
-from datetime import datetime
 from functools import wraps
 
 from flask import Blueprint, current_app, flash, redirect, render_template, request, url_for
@@ -15,6 +14,7 @@ from services.liga_betplay_import_service import import_liga_betplay_fixture
 from services.liga_betplay_results_import_service import import_liga_betplay_results_csv
 from services.points_service import update_prediction_points
 from services.sync_service import sync_fixtures, sync_results
+from services.time_service import parse_local_datetime
 
 
 admin_bp = Blueprint("admin", __name__, url_prefix="/admin")
@@ -34,14 +34,10 @@ def admin_required(view):
     return wrapped
 
 
-def parse_datetime(value):
-    return datetime.strptime(value, "%Y-%m-%dT%H:%M")
-
-
 def apply_match_form(match):
     match.home_team = request.form.get("home_team", "").strip()
     match.away_team = request.form.get("away_team", "").strip()
-    match.starts_at = parse_datetime(request.form.get("starts_at", ""))
+    match.starts_at = parse_local_datetime(request.form.get("starts_at", ""))
     match.group_name = request.form.get("group_name", "").strip() or "Fase de grupos"
     match.venue = request.form.get("venue", "").strip() or "Sede por confirmar"
     match.competition = request.form.get("competition", "").strip() or "FIFA World Cup"
@@ -50,6 +46,18 @@ def apply_match_form(match):
     match.stage = request.form.get("stage", "").strip() or match.group_name
     match.status = request.form.get("status", "scheduled")
     match.api_id = request.form.get("api_id", "").strip() or None
+
+
+def validate_match_form(match):
+    if not match.home_team or not match.away_team:
+        return "Completa los equipos."
+    if match.status not in MATCH_STATUSES:
+        return "El estado del partido no es valido."
+    if match.api_id:
+        duplicate = Match.query.filter(Match.api_id == match.api_id, Match.id != match.id).first()
+        if duplicate:
+            return "El API ID ya esta usado por otro partido."
+    return None
 
 
 def recalculate_match_points(match):
@@ -117,8 +125,9 @@ def new_match():
             flash("La fecha del partido no es valida.", "error")
             return render_template("admin/match_form.html", match=match, statuses=MATCH_STATUSES)
 
-        if not match.home_team or not match.away_team:
-            flash("Completa los equipos.", "error")
+        form_error = validate_match_form(match)
+        if form_error:
+            flash(form_error, "error")
         else:
             db.session.add(match)
             db.session.commit()
@@ -137,6 +146,11 @@ def edit_match(match_id):
             apply_match_form(match)
         except ValueError:
             flash("La fecha del partido no es valida.", "error")
+            return render_template("admin/match_form.html", match=match, statuses=MATCH_STATUSES)
+
+        form_error = validate_match_form(match)
+        if form_error:
+            flash(form_error, "error")
             return render_template("admin/match_form.html", match=match, statuses=MATCH_STATUSES)
 
         if match.status == "finished" and match.has_result:

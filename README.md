@@ -18,7 +18,7 @@ Aplicacion Flask para competir con predicciones de partidos mundialistas.
 ## Instalacion en Windows
 
 ```bash
-cd C:\Users\JUNIOR\predictor_mundial_cuervo
+cd C:\Users\JUNIOR\PredictorCuervo
 python -m venv venv
 venv\Scripts\activate
 pip install -r requirements.txt
@@ -40,6 +40,55 @@ instance/database.db
 ```
 
 Los partidos iniciales se cargan automaticamente la primera vez que inicia la app.
+
+## Configuracion recomendada
+
+En desarrollo puedes correr con SQLite sin variables extra. Para un entorno compartido o produccion define al menos:
+
+```bash
+set SECRET_KEY=una-clave-larga-y-segura
+set APP_TIMEZONE=America/Bogota
+set FLASK_DEBUG=0
+python app.py
+```
+
+Si usas PostgreSQL, define `DATABASE_URL`. La app acepta URLs `postgres://` o `postgresql://` y las normaliza para usar el driver `psycopg`.
+
+```bash
+set DATABASE_URL=postgresql://usuario:clave@host:5432/base
+```
+
+En produccion (`APP_ENV=production` o `FLASK_ENV=production`) `SECRET_KEY` es obligatoria.
+
+## Migraciones
+
+El proyecto usa Flask-Migrate/Alembic. Para una base nueva, ejecuta:
+
+```bash
+set FLASK_APP=app.py
+python -m flask db upgrade
+```
+
+Si ya tienes una base SQLite local creada antes de migraciones, puedes marcarla como actual sin recrear tablas:
+
+```bash
+set FLASK_APP=app.py
+python -m flask db stamp head
+```
+
+Para crear migraciones futuras despues de modificar modelos:
+
+```bash
+set FLASK_APP=app.py
+python -m flask db migrate -m "describe el cambio"
+python -m flask db upgrade
+```
+
+`db.create_all()` se mantiene temporalmente para facilitar desarrollo local, pero los comandos `flask db ...` no lo ejecutan para que Alembic controle el esquema.
+
+## Horarios
+
+Los formularios admin y CSV se interpretan en hora Bogota (`America/Bogota`) y se guardan internamente en UTC. Las plantillas vuelven a mostrar los horarios en Bogota.
 
 ## Admin
 

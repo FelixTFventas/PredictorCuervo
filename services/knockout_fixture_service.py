@@ -3,6 +3,7 @@ from datetime import datetime, timedelta
 
 from models import db
 from models.match import Match
+from services.time_service import local_naive_to_utc_naive
 
 
 @dataclass
@@ -92,7 +93,7 @@ def create_knockout_placeholders():
 
         match.home_team = data["home_team"]
         match.away_team = data["away_team"]
-        match.starts_at = data["starts_at"]
+        match.starts_at = local_naive_to_utc_naive(data["starts_at"])
         match.group_name = "Eliminacion directa"
         match.venue = "Sede por confirmar"
         match.competition = "FIFA World Cup"

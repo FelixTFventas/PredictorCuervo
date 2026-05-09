@@ -23,7 +23,7 @@
                         <span class="versus-text">vs</span>
                         {{ team_name(match.away_team) }}
                     </strong>
-                    <span>{{ match.starts_at.strftime('%d/%m/%Y %H:%M') }} · {{ match.venue }}</span>
+                    <span>{{ match.starts_at|local_datetime }} · {{ match.venue }}</span>
                 </div>
                 <span class="status {{ match.status_label|lower|replace(' ', '-') }}">{{ match.status_label }}</span>
             </article>

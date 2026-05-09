@@ -6,6 +6,7 @@ from datetime import datetime
 from models import db
 from models.match import Match
 from services.competition_service import LIGA_BETPLAY_COMPETITION, LIGA_BETPLAY_SEASON
+from services.time_service import local_naive_to_utc_naive
 
 
 BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
@@ -39,7 +40,7 @@ def _parse_row(row, index):
             raise ValueError(f"Fila {index + 1}: falta el campo {column}.")
 
     try:
-        starts_at = datetime.strptime(f"{row['Fecha']} {row['Hora']}", "%Y-%m-%d %H:%M")
+        starts_at = local_naive_to_utc_naive(datetime.strptime(f"{row['Fecha']} {row['Hora']}", "%Y-%m-%d %H:%M"))
     except ValueError as exc:
         raise ValueError(f"Fila {index + 1}: fecha u hora invalida.") from exc
 

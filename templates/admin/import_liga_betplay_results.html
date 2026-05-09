@@ -16,6 +16,7 @@
         <span>api_id, goles, estado</span>
     </div>
     <form method="post" enctype="multipart/form-data" class="form-card import-form">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
         <label>
             CSV de resultados
             <input type="file" name="results_csv" accept=".csv,text/csv" required>

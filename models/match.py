@@ -34,6 +34,8 @@ class Match(db.Model):
         starts_at = self.starts_at
         if starts_at.tzinfo is None:
             starts_at = starts_at.replace(tzinfo=timezone.utc)
+        else:
+            starts_at = starts_at.astimezone(timezone.utc)
         return datetime.now(timezone.utc) >= starts_at
 
     @property

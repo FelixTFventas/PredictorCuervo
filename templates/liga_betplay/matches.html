@@ -26,7 +26,7 @@
                     {% set prediction = user_predictions.get(match.id) %}
                     <article class="match-card compact-card {% if match.has_placeholder_teams %}placeholder-match{% endif %}">
                         <div class="match-meta">
-                            <span>{{ match.starts_at.strftime('%d/%m %H:%M') }}</span>
+                            <span>{{ match.starts_at|local_datetime('%d/%m %H:%M') }}</span>
                             <span class="status {{ match.status_label|lower|replace(' ', '-') }}">{{ "Pendiente" if match.has_placeholder_teams else match.status_label }}</span>
                         </div>
                         <div class="teams">
@@ -44,6 +44,7 @@
                             <div class="prediction-strip muted-strip">Predicciones bloqueadas hasta confirmar equipos.</div>
                         {% endif %}
                         <form method="post" action="{{ url_for('prediction.save_prediction', match_id=match.id) }}" class="prediction-form">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                             <input type="hidden" name="return_to" value="{{ return_to }}">
                             <input type="number" name="pred_home_score" min="0" value="{{ prediction.pred_home_score if prediction else '' }}" placeholder="0" {% if not match.can_predict %}disabled{% endif %} required>
                             <span>-</span>

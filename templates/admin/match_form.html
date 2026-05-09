@@ -6,10 +6,11 @@
     <h1>Ficha del partido</h1>
 </section>
 <form method="post" class="form-card admin-form">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
     <div class="form-grid">
         <label>Equipo local<input name="home_team" value="{{ match.home_team or '' }}" required></label>
         <label>Equipo visitante<input name="away_team" value="{{ match.away_team or '' }}" required></label>
-        <label>Fecha y hora<input type="datetime-local" name="starts_at" value="{{ match.starts_at.strftime('%Y-%m-%dT%H:%M') if match.starts_at else '' }}" required></label>
+        <label>Fecha y hora<input type="datetime-local" name="starts_at" value="{{ match.starts_at|local_datetime('%Y-%m-%dT%H:%M') if match.starts_at else '' }}" required></label>
         <label>Estado
             <select name="status">
                 {% for status in statuses %}

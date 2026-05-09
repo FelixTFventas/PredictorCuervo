@@ -27,7 +27,10 @@
                 {% if current_user.is_admin %}
                     <a href="{{ url_for('admin.dashboard') }}">Admin</a>
                 {% endif %}
-                <a class="nav-pill" href="{{ url_for('auth.logout') }}">Salir</a>
+                <form method="post" action="{{ url_for('auth.logout') }}" class="nav-form">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <button class="nav-pill nav-button" type="submit">Salir</button>
+                </form>
             {% else %}
                 <a href="{{ url_for('auth.login') }}">Ingresar</a>
                 <a class="nav-pill" href="{{ url_for('auth.register') }}">Crear cuenta</a>

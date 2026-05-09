@@ -5,6 +5,7 @@
     <p class="eyebrow">Vestuario</p>
     <h1>Volver a la cancha</h1>
     <form method="post" class="form-card">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
         <label>Usuario o email<input name="identifier" required autocomplete="username"></label>
         <label>Contrasena<input name="password" type="password" required autocomplete="current-password"></label>
         <button class="button primary" type="submit">Ingresar</button>

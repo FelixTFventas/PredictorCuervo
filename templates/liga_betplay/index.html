@@ -23,7 +23,7 @@
         <article class="match-row">
             <div>
                 <strong class="row-teams">{{ club_name(next_match.home_team) }}<span class="versus-text">vs</span>{{ club_name(next_match.away_team) }}</strong>
-                <span>{{ next_match.starts_at.strftime('%d/%m/%Y %H:%M') }} · {{ next_match.venue }}</span>
+                <span>{{ next_match.starts_at|local_datetime }} · {{ next_match.venue }}</span>
             </div>
             <span class="status {{ next_match.status_label|lower|replace(' ', '-') }}">{{ next_match.status_label }}</span>
         </article>
