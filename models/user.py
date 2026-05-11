@@ -10,6 +10,8 @@ class User(UserMixin, db.Model):
     email = db.Column(db.String(160), unique=True, nullable=False)
     password_hash = db.Column(db.String(255), nullable=False)
     is_admin = db.Column(db.Boolean, default=False, nullable=False)
+    display_name = db.Column(db.String(80))
+    avatar_url = db.Column(db.String(500))
     created_at = db.Column(db.DateTime, server_default=db.func.now(), nullable=False)
 
     predictions = db.relationship("Prediction", back_populates="user", cascade="all, delete-orphan")
@@ -19,6 +21,18 @@ class User(UserMixin, db.Model):
 
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
+
+    @property
+    def display_label(self):
+        return self.display_name or self.username
+
+    @property
+    def avatar_initials(self):
+        source = self.display_label or self.email or "?"
+        parts = [part for part in source.replace("_", " ").split() if part]
+        if len(parts) >= 2:
+            return (parts[0][0] + parts[1][0]).upper()
+        return source[:2].upper()
 
     @property
     def total_points(self):

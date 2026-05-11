@@ -15,6 +15,10 @@ def ensure_sqlite_schema():
     statements = []
     if "is_admin" not in user_columns:
         statements.append('ALTER TABLE "user" ADD COLUMN is_admin BOOLEAN NOT NULL DEFAULT 0')
+    if "display_name" not in user_columns:
+        statements.append('ALTER TABLE "user" ADD COLUMN display_name VARCHAR(80)')
+    if "avatar_url" not in user_columns:
+        statements.append('ALTER TABLE "user" ADD COLUMN avatar_url VARCHAR(500)')
 
     match_additions = {
         "api_id": 'ALTER TABLE "match" ADD COLUMN api_id VARCHAR(80)',

@@ -10,7 +10,16 @@
     {% for user, total_points, predictions_count, exact_hits in rows %}
         <div class="ranking-row {% if user.id == current_user.id %}you{% endif %}">
             <span>{{ loop.index }}</span>
-            <strong>{{ user.username }}</strong>
+            <div class="ranking-player">
+                <div class="avatar avatar-sm">
+                    {% if user.avatar_url %}
+                        <img src="{{ user.avatar_url }}" alt="Avatar de {{ user.display_label }}">
+                    {% else %}
+                        <span>{{ user.avatar_initials }}</span>
+                    {% endif %}
+                </div>
+                <strong>{{ user.display_label }}</strong>
+            </div>
             <span>{{ total_points }}</span>
             <span>{{ predictions_count }}</span>
             <span>{{ exact_hits or 0 }}</span>
