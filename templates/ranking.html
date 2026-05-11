@@ -8,7 +8,20 @@
 <section class="ranking-table">
     <div class="ranking-row head"><span>#</span><span>Jugador</span><span>Pts</span><span>Pred.</span><span>Exactos</span></div>
     {% for user, total_points, predictions_count, exact_hits in rows %}
-        <div class="ranking-row {% if user.id == current_user.id %}you{% endif %}">
+        {% set exact_rate = ((exact_hits or 0) * 100 / predictions_count)|round(1) if predictions_count else 0 %}
+        <button
+            class="ranking-row ranking-player-trigger {% if user.id == current_user.id %}you{% endif %}"
+            type="button"
+            data-player-name="{{ user.display_label }}"
+            data-player-username="@{{ user.username }}"
+            data-player-avatar="{{ user.avatar_url or '' }}"
+            data-player-initials="{{ user.avatar_initials }}"
+            data-player-position="{{ loop.index }}"
+            data-player-points="{{ total_points }}"
+            data-player-predictions="{{ predictions_count }}"
+            data-player-exacts="{{ exact_hits or 0 }}"
+            data-player-rate="{{ exact_rate }}"
+        >
             <span>{{ loop.index }}</span>
             <div class="ranking-player">
                 <div class="avatar avatar-sm">
@@ -23,9 +36,31 @@
             <span>{{ total_points }}</span>
             <span>{{ predictions_count }}</span>
             <span>{{ exact_hits or 0 }}</span>
-        </div>
+        </button>
     {% else %}
         <p class="muted">Todavia no hay jugadores.</p>
     {% endfor %}
 </section>
+
+<div class="player-card-modal" data-player-modal hidden>
+    <button class="player-card-backdrop" type="button" data-player-modal-close aria-label="Cerrar ficha"></button>
+    <article class="player-card" role="dialog" aria-modal="true" aria-labelledby="player-card-title">
+        <button class="player-card-close" type="button" data-player-modal-close aria-label="Cerrar ficha">Cerrar</button>
+        <div class="player-card-top">
+            <div class="avatar avatar-xl" data-player-card-avatar></div>
+            <div>
+                <p class="eyebrow">Ficha de jugador</p>
+                <h2 id="player-card-title" data-player-card-name></h2>
+                <p class="muted" data-player-card-username></p>
+            </div>
+        </div>
+        <div class="player-card-rank">Posicion #<span data-player-card-position></span></div>
+        <div class="player-card-stats">
+            <div><span>Puntos</span><strong data-player-card-points></strong></div>
+            <div><span>Predicciones</span><strong data-player-card-predictions></strong></div>
+            <div><span>Exactos</span><strong data-player-card-exacts></strong></div>
+            <div><span>Efectividad</span><strong><span data-player-card-rate></span>%</strong></div>
+        </div>
+    </article>
+</div>
 {% endblock %}
