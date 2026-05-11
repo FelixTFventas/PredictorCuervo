@@ -6,6 +6,7 @@ from flask_login import current_user, login_required
 from models import db
 from models.match import Match
 from models.prediction import Prediction
+from models.user import User
 from services.competition_service import LIGA_BETPLAY_COMPETITION, LIGA_BETPLAY_SEASON, WORLD_CUP_COMPETITION, group_matches
 from services.api_football_service import check_api_status, fetch_colombia_leagues, fetch_liga_betplay_fixtures_preview
 from services.fixture_import_service import import_group_fixture
@@ -81,6 +82,30 @@ def dashboard():
         predictions_count=predictions_count,
         api_configured=bool(current_app.config.get("API_FOOTBALL_KEY")),
     )
+
+
+@admin_bp.route("/users/new", methods=["GET", "POST"])
+@admin_required
+def new_user():
+    if request.method == "POST":
+        username = request.form.get("username", "").strip()
+        email = request.form.get("email", "").strip().lower()
+        password = request.form.get("password", "")
+        is_admin = request.form.get("is_admin") == "on"
+
+        if not username or not email or not password:
+            flash("Completa todos los campos.", "error")
+        elif User.query.filter((User.username == username) | (User.email == email)).first():
+            flash("Ese usuario o email ya esta registrado.", "error")
+        else:
+            user = User(username=username, email=email, is_admin=is_admin)
+            user.set_password(password)
+            db.session.add(user)
+            db.session.commit()
+            flash("Usuario creado. Ya puede iniciar sesion.", "success")
+            return redirect(url_for("admin.dashboard"))
+
+    return render_template("admin/user_form.html")
 
 
 @admin_bp.route("/matches")

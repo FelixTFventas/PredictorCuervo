@@ -11,8 +11,7 @@
                 <a class="button primary" href="{{ url_for('match.matches') }}">Ver partidos</a>
                 <a class="button ghost" href="{{ url_for('ranking.ranking') }}">Ranking</a>
             {% else %}
-                <a class="button primary" href="{{ url_for('auth.register') }}">Entrar al torneo</a>
-                <a class="button ghost" href="{{ url_for('auth.login') }}">Ya tengo cuenta</a>
+                <a class="button primary" href="{{ url_for('auth.login') }}">Ingresar</a>
             {% endif %}
         </div>
     </div>

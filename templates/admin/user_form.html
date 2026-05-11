@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}Crear usuario | Predictor Mundial Cuervo{% endblock %}
+{% block content %}
+<section class="page-head">
+    <p class="eyebrow">Panel admin</p>
+    <h1>Crear usuario</h1>
+    <p class="muted">Solo los administradores pueden dar de alta nuevos jugadores.</p>
+</section>
+<section class="auth-card">
+    <form method="post" class="form-card">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <label>Usuario<input name="username" required autocomplete="off"></label>
+        <label>Email<input name="email" type="email" required autocomplete="off"></label>
+        <label>Contrasena<input name="password" type="password" required autocomplete="new-password"></label>
+        <label class="checkbox-line"><input name="is_admin" type="checkbox"> Crear como administrador</label>
+        <button class="button primary" type="submit">Crear usuario</button>
+        <a class="button ghost" href="{{ url_for('admin.dashboard') }}">Cancelar</a>
+    </form>
+</section>
+{% endblock %}
