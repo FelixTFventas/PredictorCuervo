@@ -13,7 +13,7 @@
 <section class="panel import-panel">
     <div class="section-title">
         <h2>Archivo CSV</h2>
-        <span>api_id, goles, estado</span>
+        <span>api_id, goles_local, goles_visitante, estado</span>
     </div>
     <form method="post" enctype="multipart/form-data" class="form-card import-form">
         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
@@ -24,10 +24,13 @@
         <button class="button primary" type="submit">Importar resultados</button>
     </form>
     <div class="csv-example">
-        <p class="muted">Formato esperado:</p>
-        <pre><code>api_id,home_score,away_score,status
-liga-betplay-2026-001,2,1,finished
-liga-betplay-2026-002,0,0,finished</code></pre>
+        <p class="muted">Formatos aceptados:</p>
+        <pre><code>api_id,goles_local,goles_visitante,estado
+liga-betplay-2026-001,2,1,finalizado
+liga-betplay-2026-002,0,0,finalizado
+
+api_id,home_score,away_score,status
+liga-betplay-2026-001,2,1,finished</code></pre>
     </div>
 </section>
 

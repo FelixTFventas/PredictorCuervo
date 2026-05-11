@@ -9,7 +9,32 @@ from services.points_service import update_prediction_points
 
 
 REQUIRED_COLUMNS = {"api_id", "home_score", "away_score"}
+HEADER_ALIASES = {
+    "api_id": "api_id",
+    "id": "api_id",
+    "partido": "api_id",
+    "home_score": "home_score",
+    "goles_local": "home_score",
+    "local_score": "home_score",
+    "marcador_local": "home_score",
+    "away_score": "away_score",
+    "goles_visitante": "away_score",
+    "visitante_score": "away_score",
+    "marcador_visitante": "away_score",
+    "status": "status",
+    "estado": "status",
+}
 ALLOWED_STATUSES = {"scheduled", "live", "finished", "postponed", "cancelled"}
+STATUS_ALIASES = {
+    "programado": "scheduled",
+    "en vivo": "live",
+    "en_juego": "live",
+    "finalizado": "finished",
+    "terminado": "finished",
+    "aplazado": "postponed",
+    "postergado": "postponed",
+    "cancelado": "cancelled",
+}
 
 
 @dataclass
@@ -32,13 +57,24 @@ def _parse_score(value, row_number, column):
     return score
 
 
+def _normalized_headers(fieldnames):
+    return {HEADER_ALIASES.get((fieldname or "").strip().lower(), (fieldname or "").strip()): fieldname for fieldname in fieldnames or []}
+
+
 def _validate_headers(fieldnames):
     if not fieldnames:
         return "El CSV no tiene encabezados."
-    missing = sorted(REQUIRED_COLUMNS - set(fieldnames))
+    missing = sorted(REQUIRED_COLUMNS - set(_normalized_headers(fieldnames)))
     if missing:
         return f"El CSV no tiene las columnas requeridas: {', '.join(missing)}."
     return None
+
+
+def _row_value(row, normalized_headers, column):
+    source_column = normalized_headers.get(column)
+    if not source_column:
+        return None
+    return row.get(source_column)
 
 
 def import_liga_betplay_results_csv(file_storage):
@@ -59,10 +95,11 @@ def import_liga_betplay_results_csv(file_storage):
     header_error = _validate_headers(reader.fieldnames)
     if header_error:
         return ResultsImportSummary(False, header_error)
+    normalized_headers = _normalized_headers(reader.fieldnames)
 
     for row_number, row in enumerate(reader, start=2):
         try:
-            api_id = (row.get("api_id") or "").strip()
+            api_id = (_row_value(row, normalized_headers, "api_id") or "").strip()
             if not api_id:
                 raise ValueError(f"Fila {row_number}: api_id es obligatorio.")
 
@@ -72,12 +109,13 @@ def import_liga_betplay_results_csv(file_storage):
             if match.competition != LIGA_BETPLAY_COMPETITION:
                 raise ValueError(f"Fila {row_number}: {api_id} no pertenece a Liga BetPlay.")
 
-            status = (row.get("status") or "finished").strip().lower()
+            status = (_row_value(row, normalized_headers, "status") or "finished").strip().lower()
+            status = STATUS_ALIASES.get(status, status)
             if status not in ALLOWED_STATUSES:
                 raise ValueError(f"Fila {row_number}: status {status} no es valido.")
 
-            match.home_score = _parse_score(row.get("home_score"), row_number, "home_score")
-            match.away_score = _parse_score(row.get("away_score"), row_number, "away_score")
+            match.home_score = _parse_score(_row_value(row, normalized_headers, "home_score"), row_number, "home_score")
+            match.away_score = _parse_score(_row_value(row, normalized_headers, "away_score"), row_number, "away_score")
             match.status = status
 
             for prediction in match.predictions:
