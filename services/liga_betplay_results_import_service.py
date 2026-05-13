@@ -1,6 +1,6 @@
 import csv
 from dataclasses import dataclass, field
-from io import TextIOWrapper
+from io import StringIO, TextIOWrapper
 
 from models import db
 from models.match import Match
@@ -84,13 +84,26 @@ def import_liga_betplay_results_csv(file_storage):
     if not file_storage.filename.lower().endswith(".csv"):
         return ResultsImportSummary(False, "El archivo debe ser CSV.")
 
-    summary = ResultsImportSummary(True, "Resultados importados.")
-
     try:
         stream = TextIOWrapper(file_storage.stream, encoding="utf-8-sig", newline="")
         reader = csv.DictReader(stream)
     except UnicodeDecodeError:
         return ResultsImportSummary(False, "No se pudo leer el CSV. Usa codificacion UTF-8.")
+
+    return _import_liga_betplay_results_reader(reader)
+
+
+def import_liga_betplay_results_csv_text(csv_text):
+    if not (csv_text or "").strip():
+        return ResultsImportSummary(False, "Envia contenido CSV en el cuerpo de la peticion.")
+
+    stream = StringIO(csv_text)
+    reader = csv.DictReader(stream)
+    return _import_liga_betplay_results_reader(reader)
+
+
+def _import_liga_betplay_results_reader(reader):
+    summary = ResultsImportSummary(True, "Resultados importados.")
 
     header_error = _validate_headers(reader.fieldnames)
     if header_error:
