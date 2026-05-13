@@ -99,6 +99,9 @@ def import_group_fixture():
                 db.session.add(match)
                 created += 1
 
+            if match.id:
+                data.pop("status", None)
+
             for field, value in data.items():
                 setattr(match, field, value)
 
