@@ -17,6 +17,7 @@ from routes.prediction_routes import prediction_bp
 from routes.ranking_routes import ranking_bp
 from services.admin_service import ensure_admin_user
 from services.fixture_import_service import import_group_fixture
+from services.knockout_fixture_service import create_knockout_placeholders
 from services.liga_betplay_import_service import sync_liga_betplay_seed_data
 from services.schema_service import ensure_sqlite_schema
 from services.team_flags import team_flag, team_flag_fallback
@@ -63,6 +64,7 @@ def create_app():
             ensure_admin_user(app.config.get("ADMIN_EMAIL"))
             seed_matches()
             import_group_fixture()
+            create_knockout_placeholders()
             sync_liga_betplay_seed_data()
 
     return app

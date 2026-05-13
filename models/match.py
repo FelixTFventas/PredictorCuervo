@@ -40,7 +40,7 @@ class Match(db.Model):
 
     @property
     def has_placeholder_teams(self):
-        placeholder_terms = ("Clasificado", "Ganador", "Perdedor")
+        placeholder_terms = ("Clasificado", "Ganador", "Perdedor", "Segundo Grupo", "Mejor tercero")
         teams = (self.home_team or "", self.away_team or "")
         return any(term in team for team in teams for term in placeholder_terms)
 

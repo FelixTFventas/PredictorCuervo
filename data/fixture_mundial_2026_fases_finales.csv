@@ -1,0 +1,33 @@
+Partido,Fecha,Hora,Fase,Local,Visitante,Sede
+73,2026-06-28,15:00,Dieciseisavos,Segundo Grupo A,Segundo Grupo B,SoFi Stadium - Los Angeles
+74,2026-06-29,16:30,Dieciseisavos,Ganador Grupo E,Mejor tercero A/B/C/D/F,Gillette Stadium - Boston
+75,2026-06-29,21:00,Dieciseisavos,Ganador Grupo F,Segundo Grupo C,Estadio BBVA - Monterrey
+76,2026-06-29,13:00,Dieciseisavos,Ganador Grupo C,Segundo Grupo F,NRG Stadium - Houston
+77,2026-06-30,17:00,Dieciseisavos,Ganador Grupo I,Mejor tercero C/D/F/G/H,MetLife Stadium - New York/New Jersey
+78,2026-06-30,13:00,Dieciseisavos,Segundo Grupo E,Segundo Grupo I,AT&T Stadium - Dallas
+79,2026-06-30,21:00,Dieciseisavos,Ganador Grupo A,Mejor tercero C/E/F/H/I,Estadio Azteca - Mexico City
+80,2026-07-01,12:00,Dieciseisavos,Ganador Grupo L,Mejor tercero E/H/I/J/K,Mercedes-Benz Stadium - Atlanta
+81,2026-07-01,20:00,Dieciseisavos,Ganador Grupo D,Mejor tercero B/E/F/I/J,Levi's Stadium - San Francisco Bay Area
+82,2026-07-01,16:00,Dieciseisavos,Ganador Grupo G,Mejor tercero A/E/H/I/J,Lumen Field - Seattle
+83,2026-07-02,19:00,Dieciseisavos,Segundo Grupo K,Segundo Grupo L,BMO Field - Toronto
+84,2026-07-02,15:00,Dieciseisavos,Ganador Grupo H,Segundo Grupo J,SoFi Stadium - Los Angeles
+85,2026-07-02,23:00,Dieciseisavos,Ganador Grupo B,Mejor tercero E/F/G/I/J,BC Place - Vancouver
+86,2026-07-03,18:00,Dieciseisavos,Ganador Grupo J,Segundo Grupo H,Hard Rock Stadium - Miami
+87,2026-07-03,21:30,Dieciseisavos,Ganador Grupo K,Mejor tercero D/E/I/J/L,Arrowhead Stadium - Kansas City
+88,2026-07-03,14:00,Dieciseisavos,Segundo Grupo D,Segundo Grupo G,AT&T Stadium - Dallas
+89,2026-07-04,17:00,Octavos de final,Ganador Partido 74,Ganador Partido 77,Lincoln Financial Field - Philadelphia
+90,2026-07-04,13:00,Octavos de final,Ganador Partido 73,Ganador Partido 75,NRG Stadium - Houston
+91,2026-07-05,16:00,Octavos de final,Ganador Partido 76,Ganador Partido 78,MetLife Stadium - New York/New Jersey
+92,2026-07-05,20:00,Octavos de final,Ganador Partido 79,Ganador Partido 80,Estadio Azteca - Mexico City
+93,2026-07-06,15:00,Octavos de final,Ganador Partido 83,Ganador Partido 84,AT&T Stadium - Dallas
+94,2026-07-06,20:00,Octavos de final,Ganador Partido 81,Ganador Partido 82,Lumen Field - Seattle
+95,2026-07-07,12:00,Octavos de final,Ganador Partido 86,Ganador Partido 88,Mercedes-Benz Stadium - Atlanta
+96,2026-07-07,16:00,Octavos de final,Ganador Partido 85,Ganador Partido 87,BC Place - Vancouver
+97,2026-07-09,16:00,Cuartos de final,Ganador Partido 89,Ganador Partido 90,Gillette Stadium - Boston
+98,2026-07-10,15:00,Cuartos de final,Ganador Partido 93,Ganador Partido 94,SoFi Stadium - Los Angeles
+99,2026-07-11,17:00,Cuartos de final,Ganador Partido 91,Ganador Partido 92,Hard Rock Stadium - Miami
+100,2026-07-11,21:00,Cuartos de final,Ganador Partido 95,Ganador Partido 96,Arrowhead Stadium - Kansas City
+101,2026-07-14,15:00,Semifinales,Ganador Partido 97,Ganador Partido 98,AT&T Stadium - Dallas
+102,2026-07-15,15:00,Semifinales,Ganador Partido 99,Ganador Partido 100,Mercedes-Benz Stadium - Atlanta
+103,2026-07-18,17:00,Tercer puesto,Perdedor Partido 101,Perdedor Partido 102,Hard Rock Stadium - Miami
+104,2026-07-19,15:00,Final,Ganador Partido 101,Ganador Partido 102,MetLife Stadium - New York/New Jersey
