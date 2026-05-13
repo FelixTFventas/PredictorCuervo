@@ -16,6 +16,7 @@ from routes.match_routes import match_bp
 from routes.prediction_routes import prediction_bp
 from routes.ranking_routes import ranking_bp
 from services.admin_service import ensure_admin_user
+from services.liga_betplay_import_service import sync_liga_betplay_seed_data
 from services.schema_service import ensure_sqlite_schema
 from services.team_flags import team_flag, team_flag_fallback
 from services.time_service import format_local_datetime
@@ -60,6 +61,7 @@ def create_app():
                 ensure_sqlite_schema()
             ensure_admin_user(app.config.get("ADMIN_EMAIL"))
             seed_matches()
+            sync_liga_betplay_seed_data()
 
     return app
 

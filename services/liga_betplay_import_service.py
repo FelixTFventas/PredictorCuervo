@@ -11,6 +11,7 @@ from services.time_service import local_naive_to_utc_naive
 
 BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 LIGA_BETPLAY_CSV_PATH = os.path.join(BASE_DIR, "data", "liga_betplay_2026_14_partidos.csv")
+LIGA_BETPLAY_RESULTS_CSV_PATH = os.path.join(BASE_DIR, "data", "liga_betplay_2026_cuartos_resultados.csv")
 REQUIRED_COLUMNS = {"Fecha", "Hora", "Fase", "Local", "Visitante", "Estadio"}
 
 
@@ -78,6 +79,9 @@ def import_liga_betplay_fixture():
                 db.session.add(match)
                 created += 1
 
+            if match.id:
+                data.pop("status", None)
+
             for field, value in data.items():
                 setattr(match, field, value)
 
@@ -92,3 +96,16 @@ def import_liga_betplay_fixture():
         created=created,
         updated=updated,
     )
+
+
+def sync_liga_betplay_seed_data():
+    fixture_result = import_liga_betplay_fixture()
+    if not fixture_result.ok or not os.path.exists(LIGA_BETPLAY_RESULTS_CSV_PATH):
+        return fixture_result
+
+    from services.liga_betplay_results_import_service import import_liga_betplay_results_csv_text
+
+    with open(LIGA_BETPLAY_RESULTS_CSV_PATH, encoding="utf-8-sig") as results_file:
+        import_liga_betplay_results_csv_text(results_file.read())
+
+    return fixture_result
