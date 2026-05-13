@@ -277,6 +277,11 @@ body.modal-open { overflow: hidden; }
 }
 .prediction-form { position: relative; z-index: 1; display: grid; grid-template-columns: 4.5rem auto 4.5rem auto; align-items: center; gap: 0.7rem; margin-top: 1rem; }
 .prediction-form span { color: var(--muted); font-weight: 900; }
+.prediction-form .button {
+    color: #07101a;
+    background: #66E85D;
+    box-shadow: 0 14px 34px rgba(102, 232, 93, 0.24);
+}
 
 .ranking-table { overflow: hidden; border-radius: 1.5rem; }
 .ranking-row { display: grid; grid-template-columns: 4rem 1fr 6rem 6rem 6rem; gap: 1rem; align-items: center; width: 100%; padding: 1rem 1.2rem; border: 0; border-bottom: 1px solid var(--line); color: inherit; background: transparent; font: inherit; text-align: left; }
