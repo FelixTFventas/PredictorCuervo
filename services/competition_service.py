@@ -39,3 +39,30 @@ def ranking_rows_for_competition(competition):
         .order_by(total_points.desc(), User.username.asc())
         .all()
     )
+
+
+def recent_finished_predictions_by_user(competition, user_ids, limit=4):
+    recent_predictions = {}
+    for user_id in user_ids:
+        predictions = (
+            Prediction.query.join(Match)
+            .filter(
+                Prediction.user_id == user_id,
+                Match.competition == competition,
+                Match.home_score.isnot(None),
+                Match.away_score.isnot(None),
+            )
+            .order_by(Match.starts_at.desc())
+            .limit(limit)
+            .all()
+        )
+        recent_predictions[user_id] = [
+            {
+                "teams": f"{prediction.match.home_team} vs {prediction.match.away_team}",
+                "prediction": f"{prediction.pred_home_score} - {prediction.pred_away_score}",
+                "result": f"{prediction.match.home_score} - {prediction.match.away_score}",
+                "points": prediction.points or 0,
+            }
+            for prediction in predictions
+        ]
+    return recent_predictions

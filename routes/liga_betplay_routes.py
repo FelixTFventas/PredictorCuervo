@@ -3,7 +3,13 @@ from flask_login import current_user, login_required
 
 from models.match import Match
 from models.prediction import Prediction
-from services.competition_service import LIGA_BETPLAY_COMPETITION, LIGA_BETPLAY_SEASON, group_matches, ranking_rows_for_competition
+from services.competition_service import (
+    LIGA_BETPLAY_COMPETITION,
+    LIGA_BETPLAY_SEASON,
+    group_matches,
+    ranking_rows_for_competition,
+    recent_finished_predictions_by_user,
+)
 
 
 liga_betplay_bp = Blueprint("liga_betplay", __name__, url_prefix="/liga-betplay")
@@ -55,9 +61,11 @@ def matches():
 @login_required
 def ranking():
     rows = ranking_rows_for_competition(LIGA_BETPLAY_COMPETITION)
+    recent_predictions = recent_finished_predictions_by_user(LIGA_BETPLAY_COMPETITION, [row[0].id for row in rows])
     return render_template(
         "ranking.html",
         rows=rows,
+        recent_predictions=recent_predictions,
         page_title="Ranking Liga BetPlay",
         page_eyebrow="Tabla Liga BetPlay",
     )

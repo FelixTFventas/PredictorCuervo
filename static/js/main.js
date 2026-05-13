@@ -19,6 +19,7 @@ if (playerModal && playerTriggers.length) {
     const predictionsSlot = playerModal.querySelector("[data-player-card-predictions]");
     const exactsSlot = playerModal.querySelector("[data-player-card-exacts]");
     const rateSlot = playerModal.querySelector("[data-player-card-rate]");
+    const recentSlot = playerModal.querySelector("[data-player-card-recent]");
     const closeButtons = playerModal.querySelectorAll("[data-player-modal-close]");
 
     const closePlayerModal = () => {
@@ -47,6 +48,30 @@ if (playerModal && playerTriggers.length) {
         predictionsSlot.textContent = data.playerPredictions;
         exactsSlot.textContent = data.playerExacts;
         rateSlot.textContent = data.playerRate;
+
+        const recentPredictions = JSON.parse(data.playerRecent || "[]");
+        recentSlot.replaceChildren();
+        if (recentPredictions.length) {
+            recentPredictions.forEach((prediction) => {
+                const row = document.createElement("div");
+                row.className = "player-card-recent-row";
+
+                const teams = document.createElement("strong");
+                teams.textContent = prediction.teams;
+
+                const meta = document.createElement("span");
+                meta.textContent = `Prediccion ${prediction.prediction} · Resultado ${prediction.result} · ${prediction.points} pts`;
+
+                row.append(teams, meta);
+                recentSlot.appendChild(row);
+            });
+        } else {
+            const empty = document.createElement("p");
+            empty.className = "muted player-card-empty";
+            empty.textContent = "Aun no tiene marcadores en partidos finalizados.";
+            recentSlot.appendChild(empty);
+        }
+
         playerModal.hidden = false;
         document.body.classList.add("modal-open");
     };
