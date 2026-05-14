@@ -12,6 +12,7 @@ from services.api_football_service import check_api_status, fetch_colombia_leagu
 from services.fixture_import_service import import_group_fixture
 from services.forebet_result_service import sync_liga_betplay_results_from_forebet
 from services.knockout_fixture_service import create_knockout_placeholders
+from services.liga_betplay_bracket_service import update_liga_betplay_bracket
 from services.liga_betplay_import_service import import_liga_betplay_fixture
 from services.liga_betplay_results_import_service import import_liga_betplay_results_csv
 from services.points_service import update_prediction_points
@@ -207,6 +208,8 @@ def save_result(match_id):
 
     match.status = "finished"
     recalculate_match_points(match)
+    if match.competition == LIGA_BETPLAY_COMPETITION:
+        update_liga_betplay_bracket(commit=False)
     db.session.commit()
     flash("Resultado guardado y puntos recalculados.", "success")
     return redirect(url_for(redirect_endpoint))

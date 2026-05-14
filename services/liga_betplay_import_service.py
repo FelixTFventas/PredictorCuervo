@@ -6,6 +6,7 @@ from datetime import datetime
 from models import db
 from models.match import Match
 from services.competition_service import LIGA_BETPLAY_COMPETITION, LIGA_BETPLAY_SEASON
+from services.liga_betplay_bracket_service import update_liga_betplay_bracket
 from services.time_service import local_naive_to_utc_naive
 
 
@@ -85,6 +86,7 @@ def import_liga_betplay_fixture():
             for field, value in data.items():
                 setattr(match, field, value)
 
+        update_liga_betplay_bracket(commit=False)
         db.session.commit()
     except ValueError as exc:
         db.session.rollback()

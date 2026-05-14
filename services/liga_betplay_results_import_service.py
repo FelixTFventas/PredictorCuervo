@@ -5,6 +5,7 @@ from io import StringIO, TextIOWrapper
 from models import db
 from models.match import Match
 from services.competition_service import LIGA_BETPLAY_COMPETITION
+from services.liga_betplay_bracket_service import update_liga_betplay_bracket
 from services.points_service import update_prediction_points
 
 
@@ -140,6 +141,7 @@ def _import_liga_betplay_results_reader(reader):
             summary.errors.append(str(exc))
 
     if summary.updated_matches:
+        update_liga_betplay_bracket(commit=False)
         db.session.commit()
     else:
         db.session.rollback()

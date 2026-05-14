@@ -9,6 +9,7 @@ from urllib.request import Request, urlopen
 from models import db
 from models.match import Match
 from services.competition_service import LIGA_BETPLAY_COMPETITION, LIGA_BETPLAY_SEASON
+from services.liga_betplay_bracket_service import update_liga_betplay_bracket
 from services.points_service import update_prediction_points
 from services.time_service import app_timezone, utc_naive_to_local
 
@@ -95,6 +96,7 @@ def sync_liga_betplay_results_from_forebet():
         summary.updated_matches += 1
 
     if summary.updated_matches:
+        update_liga_betplay_bracket(commit=False)
         db.session.commit()
     else:
         db.session.rollback()
