@@ -74,6 +74,9 @@ def _set_two_leg_teams(tie, first_winner, second_winner):
 
 
 def _set_match_teams(match, home_team, away_team):
+    if not match.has_placeholder_teams:
+        return 0
+
     if match.home_team == home_team and match.away_team == away_team:
         return 0
     match.home_team = home_team
