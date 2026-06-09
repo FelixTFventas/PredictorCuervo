@@ -2,6 +2,8 @@ from collections import OrderedDict
 
 from sqlalchemy import case, func
 
+from models import db
+from models.champion_pick import ChampionPick
 from models.match import Match
 from models.prediction import Prediction
 from models.user import User
@@ -24,18 +26,32 @@ def group_matches(matches):
 
 
 def ranking_rows_for_competition(competition):
-    total_points = func.coalesce(func.sum(case((Match.competition == competition, Prediction.points), else_=0)), 0)
+    match_points = func.coalesce(func.sum(case((Match.competition == competition, Prediction.points), else_=0)), 0)
     predictions_count = func.coalesce(func.sum(case((Match.competition == competition, 1), else_=0)), 0)
     exact_hits = func.coalesce(
         func.sum(case(((Match.competition == competition) & (Prediction.points == 3), 1), else_=0)),
         0,
     )
+    query = User.query.outerjoin(Prediction, Prediction.user_id == User.id).outerjoin(Match, Prediction.match_id == Match.id)
+
+    if competition == WORLD_CUP_COMPETITION:
+        champion_points = (
+            db.session.query(ChampionPick.user_id.label("user_id"), func.max(ChampionPick.points).label("points"))
+            .group_by(ChampionPick.user_id)
+            .subquery()
+        )
+        champion_bonus = func.coalesce(champion_points.c.points, 0)
+        total_points = match_points + champion_bonus
+        query = query.outerjoin(champion_points, champion_points.c.user_id == User.id)
+        group_by_columns = [User.id, champion_points.c.points]
+    else:
+        total_points = match_points
+        group_by_columns = [User.id]
 
     return (
-        User.query.outerjoin(Prediction, Prediction.user_id == User.id)
-        .outerjoin(Match, Prediction.match_id == Match.id)
+        query
         .with_entities(User, total_points.label("total_points"), predictions_count.label("predictions_count"), exact_hits.label("exact_hits"))
-        .group_by(User.id)
+        .group_by(*group_by_columns)
         .order_by(total_points.desc(), User.username.asc())
         .all()
     )

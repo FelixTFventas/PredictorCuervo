@@ -11,6 +11,7 @@ from models.match import Match
 from models.prediction import Prediction
 from models.user import User
 from services.competition_service import LIGA_BETPLAY_COMPETITION, LIGA_BETPLAY_SEASON, WORLD_CUP_COMPETITION, group_matches
+from services.champion_service import available_world_cup_teams, champion_setting, public_champion_rows, set_champion_setting
 from services.api_football_service import check_api_status, fetch_colombia_leagues, fetch_liga_betplay_fixtures_preview
 from services.fixture_import_service import import_group_fixture
 from services.forebet_result_service import sync_liga_betplay_results_from_forebet
@@ -133,6 +134,30 @@ def new_invitation():
     db.session.commit()
     flash("Invitacion creada. El link expira en 3 dias.", "success")
     return redirect(url_for("admin.invitations"))
+
+
+@admin_bp.route("/champion", methods=["GET", "POST"])
+@admin_required
+def champion_admin():
+    teams = available_world_cup_teams()
+    if request.method == "POST":
+        team_name = request.form.get("team_name", "").strip()
+        if team_name not in teams:
+            flash("Selecciona una seleccion valida.", "error")
+        else:
+            set_champion_setting(team_name)
+            db.session.commit()
+            flash("Campeon real guardado y bonus recalculado.", "success")
+            return redirect(url_for("admin.champion_admin"))
+
+    public_rows, summary = public_champion_rows()
+    return render_template(
+        "admin/champion.html",
+        teams=teams,
+        champion=champion_setting(),
+        public_rows=public_rows,
+        summary=summary,
+    )
 
 
 @admin_bp.route("/matches")

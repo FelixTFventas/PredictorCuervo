@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+{% from "macros/team.html" import team_name with context %}
+{% block title %}Mi Campeon | Predictor Mundial Cuervo{% endblock %}
+{% block content %}
+<section class="page-head champion-head">
+    <p class="eyebrow">Bonus Mundial</p>
+    <h1>Mi Campeon</h1>
+    <p class="muted">Elige la seleccion campeona antes del inicio del Mundial. Si aciertas, sumas 10 puntos al Ranking Mundial.</p>
+</section>
+
+<section class="champion-grid">
+    <article class="panel champion-pick-card">
+        <div class="section-title">
+            <h2>Tu eleccion</h2>
+            <span>{% if locked %}Cerrado{% else %}Abierto{% endif %}</span>
+        </div>
+        {% if current_pick %}
+            <p class="champion-current">Tu campeon actual: <strong>{{ team_name(current_pick.team_name) }}</strong></p>
+        {% else %}
+            <p class="champion-current muted">Todavia no has elegido campeon.</p>
+        {% endif %}
+        {% if champion %}
+            <p class="muted">Campeon oficial definido: {{ team_name(champion) }}</p>
+        {% endif %}
+        <form method="post" class="form-card">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <label>Seleccion campeona
+                <select name="team_name" {% if locked %}disabled{% endif %} required>
+                    <option value="">Elige una seleccion</option>
+                    {% for team in teams %}
+                        <option value="{{ team }}" {% if current_pick and current_pick.team_name == team %}selected{% endif %}>{{ team }}</option>
+                    {% endfor %}
+                </select>
+            </label>
+            <button class="button primary" type="submit" {% if locked %}disabled{% endif %}>Guardar campeon</button>
+        </form>
+        <p class="muted champion-note">Las elecciones quedan bloqueadas automaticamente cuando empiece el primer partido.</p>
+    </article>
+
+    <article class="panel champion-summary-card">
+        <div class="section-title">
+            <h2>Resumen</h2>
+            <span>{{ public_rows|length }} jugadores</span>
+        </div>
+        <div class="champion-summary-list">
+            {% for team, count in summary.most_common() %}
+                <div class="champion-summary-row">
+                    <strong>{% if team == "Pendiente" %}Pendiente{% else %}{{ team_name(team) }}{% endif %}</strong>
+                    <span>{{ count }}</span>
+                </div>
+            {% endfor %}
+        </div>
+    </article>
+</section>
+
+<section class="panel champion-board-panel">
+    <div class="section-title">
+        <h2>Tablero publico</h2>
+        <span>Todos los jugadores</span>
+    </div>
+    <div class="champion-board">
+        <div class="champion-board-row head"><span>Jugador</span><span>Campeon elegido</span></div>
+        {% for row in public_rows %}
+            <div class="champion-board-row {% if row.user.id == current_user.id %}you{% endif %}">
+                <div class="ranking-player">
+                    <div class="avatar avatar-sm">
+                        {% if row.user.avatar_url %}
+                            <img src="{{ row.user.avatar_url }}" alt="Avatar de {{ row.user.display_label }}">
+                        {% else %}
+                            <span>{{ row.user.avatar_initials }}</span>
+                        {% endif %}
+                    </div>
+                    <strong>{{ row.user.display_label }}</strong>
+                </div>
+                <span class="champion-choice {% if not row.team_name %}pending{% endif %}">
+                    {% if row.team_name %}{{ team_name(row.team_name) }}{% else %}Pendiente{% endif %}
+                </span>
+            </div>
+        {% endfor %}
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% from "macros/team.html" import team_name with context %}
+{% block title %}Campeon Mundial | Predictor Mundial Cuervo{% endblock %}
+{% block content %}
+<section class="page-head">
+    <p class="eyebrow">Panel admin</p>
+    <h1>Campeon Mundial</h1>
+    <p class="muted">Define el campeon real para asignar 10 puntos a quienes acertaron.</p>
+</section>
+
+<section class="panel champion-pick-card">
+    <div class="section-title">
+        <h2>Campeon oficial</h2>
+        <span>{% if champion %}{{ champion }}{% else %}Sin definir{% endif %}</span>
+    </div>
+    <form method="post" class="form-card">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <label>Seleccion campeona
+            <select name="team_name" required>
+                <option value="">Elige una seleccion</option>
+                {% for team in teams %}
+                    <option value="{{ team }}" {% if champion == team %}selected{% endif %}>{{ team }}</option>
+                {% endfor %}
+            </select>
+        </label>
+        <button class="button primary" type="submit">Guardar y recalcular bonus</button>
+        <a class="button ghost" href="{{ url_for('admin.dashboard') }}">Volver</a>
+    </form>
+</section>
+
+<section class="panel champion-board-panel">
+    <div class="section-title">
+        <h2>Elecciones publicas</h2>
+        <span>{{ public_rows|length }} jugadores</span>
+    </div>
+    <div class="champion-board">
+        <div class="champion-board-row head"><span>Jugador</span><span>Campeon elegido</span></div>
+        {% for row in public_rows %}
+            <div class="champion-board-row">
+                <strong>{{ row.user.display_label }}</strong>
+                <span class="champion-choice {% if not row.team_name %}pending{% endif %}">
+                    {% if row.team_name %}{{ team_name(row.team_name) }}{% else %}Pendiente{% endif %}
+                </span>
+            </div>
+        {% endfor %}
+    </div>
+</section>
+{% endblock %}

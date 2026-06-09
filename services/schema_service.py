@@ -53,5 +53,33 @@ def ensure_sqlite_schema():
         )
         statements.append("created invitation table")
 
+    if not inspector.has_table("champion_pick"):
+        db.session.execute(
+            text(
+                'CREATE TABLE champion_pick ('
+                'id INTEGER NOT NULL PRIMARY KEY, '
+                'user_id INTEGER NOT NULL UNIQUE, '
+                'team_name VARCHAR(80) NOT NULL, '
+                'points INTEGER NOT NULL DEFAULT 0, '
+                'created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP, '
+                'updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP, '
+                'FOREIGN KEY(user_id) REFERENCES "user" (id)'
+                ')'
+            )
+        )
+        statements.append("created champion_pick table")
+
+    if not inspector.has_table("tournament_setting"):
+        db.session.execute(
+            text(
+                'CREATE TABLE tournament_setting ('
+                'key VARCHAR(80) NOT NULL PRIMARY KEY, '
+                'value VARCHAR(160) NOT NULL, '
+                'updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP'
+                ')'
+            )
+        )
+        statements.append("created tournament_setting table")
+
     if statements:
         db.session.commit()

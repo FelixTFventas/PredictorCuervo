@@ -21,6 +21,7 @@
             {% if current_user.is_authenticated %}
                 <a href="{{ url_for('match.dashboard') }}">Dashboard</a>
                 <a href="{{ url_for('match.matches') }}">Mundial</a>
+                <a href="{{ url_for('champion.champion') }}">Mi Campeon</a>
                 <a href="{{ url_for('liga_betplay.index') }}">Liga BetPlay</a>
                 <a href="{{ url_for('ranking.ranking') }}">Ranking Mundial</a>
                 <a href="{{ url_for('match.profile') }}">Perfil</a>

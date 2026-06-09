@@ -12,3 +12,5 @@ from .user import User  # noqa: E402,F401
 from .match import Match  # noqa: E402,F401
 from .prediction import Prediction  # noqa: E402,F401
 from .invitation import Invitation  # noqa: E402,F401
+from .champion_pick import ChampionPick  # noqa: E402,F401
+from .tournament_setting import TournamentSetting  # noqa: E402,F401

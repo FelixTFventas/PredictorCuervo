@@ -11,6 +11,7 @@ from models import db, login_manager
 from routes.auth_routes import auth_bp
 from routes.admin_routes import admin_bp
 from routes.api_results_routes import api_results_bp
+from routes.champion_routes import champion_bp
 from routes.liga_betplay_routes import liga_betplay_bp
 from routes.match_routes import match_bp
 from routes.prediction_routes import prediction_bp
@@ -41,6 +42,7 @@ def create_app():
     app.register_blueprint(admin_bp)
     app.register_blueprint(api_results_bp)
     app.register_blueprint(auth_bp)
+    app.register_blueprint(champion_bp)
     app.register_blueprint(liga_betplay_bp)
     app.register_blueprint(match_bp)
     app.register_blueprint(prediction_bp)

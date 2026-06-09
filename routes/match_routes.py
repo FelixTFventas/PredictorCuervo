@@ -5,6 +5,7 @@ from flask import Blueprint, flash, redirect, render_template, request, url_for
 from flask_login import current_user, login_required
 
 from models import db
+from models.champion_pick import ChampionPick
 from models.match import Match
 from models.prediction import Prediction
 from services.competition_service import WORLD_CUP_COMPETITION, group_matches, ranking_rows_for_competition
@@ -17,7 +18,9 @@ match_bp = Blueprint("match", __name__)
 @login_required
 def dashboard():
     predictions = Prediction.query.join(Match).filter(Prediction.user_id == current_user.id, Match.competition == WORLD_CUP_COMPETITION).all()
-    total_points = sum(prediction.points or 0 for prediction in predictions)
+    champion_pick = ChampionPick.query.filter_by(user_id=current_user.id).first()
+    champion_points = champion_pick.points if champion_pick else 0
+    total_points = sum(prediction.points or 0 for prediction in predictions) + champion_points
     exact_hits = sum(1 for prediction in predictions if prediction.points == 3)
     now_utc = datetime.now(timezone.utc).replace(tzinfo=None)
     next_matches = (
