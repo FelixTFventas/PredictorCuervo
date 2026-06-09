@@ -1,3 +1,4 @@
+from datetime import datetime, timezone
 from urllib.parse import urlparse
 
 from flask import Blueprint, flash, redirect, render_template, request, url_for
@@ -18,7 +19,14 @@ def dashboard():
     predictions = Prediction.query.join(Match).filter(Prediction.user_id == current_user.id, Match.competition == WORLD_CUP_COMPETITION).all()
     total_points = sum(prediction.points or 0 for prediction in predictions)
     exact_hits = sum(1 for prediction in predictions if prediction.points == 3)
-    next_matches = Match.query.filter_by(competition=WORLD_CUP_COMPETITION).order_by(Match.starts_at.asc()).limit(3).all()
+    now_utc = datetime.now(timezone.utc).replace(tzinfo=None)
+    next_matches = (
+        Match.query.filter_by(competition=WORLD_CUP_COMPETITION, status="scheduled")
+        .filter(Match.starts_at > now_utc)
+        .order_by(Match.starts_at.asc())
+        .limit(3)
+        .all()
+    )
 
     ranking = ranking_rows_for_competition(WORLD_CUP_COMPETITION)
     position = next((index + 1 for index, row in enumerate(ranking) if row[0].id == current_user.id), None)

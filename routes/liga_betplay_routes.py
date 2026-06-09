@@ -1,3 +1,5 @@
+from datetime import datetime, timezone
+
 from flask import Blueprint, render_template
 from flask_login import current_user, login_required
 
@@ -18,10 +20,12 @@ liga_betplay_bp = Blueprint("liga_betplay", __name__, url_prefix="/liga-betplay"
 @liga_betplay_bp.route("/")
 @login_required
 def index():
+    now_utc = datetime.now(timezone.utc).replace(tzinfo=None)
     matches_count = Match.query.filter_by(competition=LIGA_BETPLAY_COMPETITION, season=LIGA_BETPLAY_SEASON).count()
     finished_count = Match.query.filter_by(competition=LIGA_BETPLAY_COMPETITION, season=LIGA_BETPLAY_SEASON, status="finished").count()
     next_match = (
-        Match.query.filter_by(competition=LIGA_BETPLAY_COMPETITION, season=LIGA_BETPLAY_SEASON)
+        Match.query.filter_by(competition=LIGA_BETPLAY_COMPETITION, season=LIGA_BETPLAY_SEASON, status="scheduled")
+        .filter(Match.starts_at > now_utc)
         .order_by(Match.starts_at.asc())
         .first()
     )

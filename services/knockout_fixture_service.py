@@ -1,11 +1,10 @@
 import csv
 import os
 from dataclasses import dataclass
-from datetime import datetime
 
 from models import db
 from models.match import Match
-from services.time_service import local_naive_to_utc_naive
+from services.world_cup_time_service import world_cup_venue_local_to_utc_naive
 
 
 BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
@@ -60,7 +59,7 @@ def _parse_row(row, row_number):
         raise ValueError(f"Fila {row_number}: Partido debe ser numerico.") from exc
 
     try:
-        starts_at = local_naive_to_utc_naive(datetime.strptime(f"{row['Fecha']} {row['Hora']}", "%Y-%m-%d %H:%M"))
+        starts_at = world_cup_venue_local_to_utc_naive(row["Fecha"], row["Hora"], row["Sede"])
     except ValueError as exc:
         raise ValueError(f"Fila {row_number}: fecha u hora invalida.") from exc
 
