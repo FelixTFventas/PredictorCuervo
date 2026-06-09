@@ -178,6 +178,10 @@ body.modal-open { overflow: hidden; }
 .metric-card strong { display: block; margin-top: 0.4rem; font-family: "Bebas Neue", sans-serif; font-size: 3.5rem; line-height: 1; }
 
 .panel { padding: 1.2rem; border-radius: 1.6rem; }
+.invitation-panel { margin-bottom: 1rem; }
+.invitation-list { display: grid; gap: 0.8rem; }
+.invitation-row { display: grid; grid-template-columns: minmax(150px, 0.35fr) minmax(0, 1fr); gap: 1rem; align-items: center; padding: 1rem; border: 1px solid var(--line); border-radius: 1.1rem; background: rgba(255,255,255,0.045); }
+.invitation-row span { display: block; color: var(--muted); margin-top: 0.25rem; }
 .section-title { display: flex; justify-content: space-between; align-items: center; gap: 1rem; margin-bottom: 1rem; }
 .section-title a, .section-title span { color: var(--gold); font-weight: 900; }
 .match-list { display: grid; gap: 0.8rem; }
@@ -386,7 +390,7 @@ body.modal-open { overflow: hidden; }
     .teams { font-size: 2rem; }
     .ranking-row { grid-template-columns: 2.2rem 1fr 3.5rem 3.8rem 4rem; gap: 0.5rem; padding: 0.9rem; font-size: 0.9rem; }
     .player-card-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-    .admin-match-card, .form-grid, .profile-grid { grid-template-columns: 1fr; }
+    .admin-match-card, .form-grid, .profile-grid, .invitation-row { grid-template-columns: 1fr; }
     .admin-headline { align-items: flex-start; flex-direction: column; }
     .admin-headline-actions { justify-content: flex-start; }
 }

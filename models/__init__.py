@@ -11,3 +11,4 @@ login_manager.login_message = "Inicia sesion para continuar."
 from .user import User  # noqa: E402,F401
 from .match import Match  # noqa: E402,F401
 from .prediction import Prediction  # noqa: E402,F401
+from .invitation import Invitation  # noqa: E402,F401

@@ -1,9 +1,12 @@
+from datetime import datetime, timedelta, timezone
 from functools import wraps
+import secrets
 
 from flask import Blueprint, current_app, flash, redirect, render_template, request, url_for
 from flask_login import current_user, login_required
 
 from models import db
+from models.invitation import Invitation
 from models.match import Match
 from models.prediction import Prediction
 from models.user import User
@@ -23,6 +26,7 @@ from services.time_service import parse_local_datetime
 admin_bp = Blueprint("admin", __name__, url_prefix="/admin")
 
 MATCH_STATUSES = ["scheduled", "live", "finished", "postponed", "cancelled"]
+INVITATION_DAYS = 3
 
 
 def admin_required(view):
@@ -107,6 +111,28 @@ def new_user():
             return redirect(url_for("admin.dashboard"))
 
     return render_template("admin/user_form.html")
+
+
+@admin_bp.route("/invitations")
+@admin_required
+def invitations():
+    invitations_list = Invitation.query.order_by(Invitation.created_at.desc()).limit(30).all()
+    return render_template("admin/invitations.html", invitations=invitations_list)
+
+
+@admin_bp.route("/invitations/new", methods=["POST"])
+@admin_required
+def new_invitation():
+    invitation = Invitation(
+        token=secrets.token_urlsafe(32),
+        is_admin=False,
+        expires_at=datetime.now(timezone.utc).replace(tzinfo=None) + timedelta(days=INVITATION_DAYS),
+        created_by_id=current_user.id,
+    )
+    db.session.add(invitation)
+    db.session.commit()
+    flash("Invitacion creada. El link expira en 3 dias.", "success")
+    return redirect(url_for("admin.invitations"))
 
 
 @admin_bp.route("/matches")

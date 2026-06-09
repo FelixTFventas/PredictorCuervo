@@ -35,5 +35,23 @@ def ensure_sqlite_schema():
 
     for statement in statements:
         db.session.execute(text(statement))
+
+    if not inspector.has_table("invitation"):
+        db.session.execute(
+            text(
+                'CREATE TABLE invitation ('
+                'id INTEGER NOT NULL PRIMARY KEY, '
+                'token VARCHAR(120) NOT NULL UNIQUE, '
+                'is_admin BOOLEAN NOT NULL DEFAULT 0, '
+                'expires_at DATETIME NOT NULL, '
+                'used_at DATETIME, '
+                'created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP, '
+                'created_by_id INTEGER NOT NULL, '
+                'FOREIGN KEY(created_by_id) REFERENCES "user" (id)'
+                ')'
+            )
+        )
+        statements.append("created invitation table")
+
     if statements:
         db.session.commit()

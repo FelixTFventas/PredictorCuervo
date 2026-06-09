@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}Crear cuenta | Predictor Mundial Cuervo{% endblock %}
+{% block content %}
+<section class="auth-card">
+    <p class="eyebrow">Invitacion</p>
+    <h1>Entrar al predictor</h1>
+    <p class="muted">Completa tus datos para crear tu cuenta. Este link expira el {{ invitation.expires_at|local_datetime }}.</p>
+    <form method="post" class="form-card">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <label>Usuario<input name="username" required autocomplete="username"></label>
+        <label>Email<input name="email" type="email" required autocomplete="email"></label>
+        <label>Contrasena<input name="password" type="password" required autocomplete="new-password" minlength="6"></label>
+        <label>Confirmar contrasena<input name="confirm_password" type="password" required autocomplete="new-password" minlength="6"></label>
+        <button class="button primary" type="submit">Crear cuenta</button>
+    </form>
+</section>
+{% endblock %}

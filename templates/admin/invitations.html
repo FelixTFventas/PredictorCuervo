@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block title %}Invitaciones | Predictor Mundial Cuervo{% endblock %}
+{% block content %}
+<section class="page-head">
+    <p class="eyebrow">Panel admin</p>
+    <h1>Invitaciones</h1>
+    <p class="muted">Genera links para que nuevos jugadores creen su cuenta. Cada link expira en 3 dias y solo puede usarse una vez.</p>
+</section>
+
+<section class="panel invitation-panel">
+    <div class="section-title">
+        <h2>Nuevo link</h2>
+        <span>Usuario normal</span>
+    </div>
+    <form method="post" action="{{ url_for('admin.new_invitation') }}" class="admin-actions">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <button class="button primary" type="submit">Crear invitacion</button>
+        <a class="button ghost" href="{{ url_for('admin.dashboard') }}">Volver</a>
+    </form>
+</section>
+
+<section class="panel invitation-panel">
+    <div class="section-title">
+        <h2>Links recientes</h2>
+        <span>{{ invitations|length }} invitaciones</span>
+    </div>
+    {% if invitations %}
+        <div class="invitation-list">
+            {% for invitation in invitations %}
+                {% set invite_url = url_for('auth.register_invite', token=invitation.token, _external=True) %}
+                <article class="invitation-row">
+                    <div>
+                        <strong>
+                            {% if invitation.is_used %}
+                                Usada
+                            {% elif invitation.is_expired %}
+                                Expirada
+                            {% else %}
+                                Disponible
+                            {% endif %}
+                        </strong>
+                        <span>Expira: {{ invitation.expires_at|local_datetime }}</span>
+                    </div>
+                    <input readonly value="{{ invite_url }}" onclick="this.select()">
+                </article>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p class="muted">Todavia no hay invitaciones.</p>
+    {% endif %}
+</section>
+{% endblock %}
