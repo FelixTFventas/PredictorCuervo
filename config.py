@@ -2,6 +2,7 @@ import os
 
 
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
+DEFAULT_WORLD_CUP_RESULTS_SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQub_zFEKqG_4lYOw311MigpPS6YY2g6a3dMtQrAAPFRMTy-J6N6INzaiz8iQ6tTqo-qKxmu21C63sU/pub?gid=0&single=true&output=csv"
 
 
 def _database_url():
@@ -39,7 +40,7 @@ class Config:
     API_FOOTBALL_BASE_URL = os.environ.get("API_FOOTBALL_BASE_URL", "https://v3.football.api-sports.io")
     WORLD_CUP_LEAGUE_ID = os.environ.get("WORLD_CUP_LEAGUE_ID")
     WORLD_CUP_SEASON = os.environ.get("WORLD_CUP_SEASON", "2026")
-    WORLD_CUP_RESULTS_SHEET_CSV_URL = os.environ.get("WORLD_CUP_RESULTS_SHEET_CSV_URL")
+    WORLD_CUP_RESULTS_SHEET_CSV_URL = os.environ.get("WORLD_CUP_RESULTS_SHEET_CSV_URL", DEFAULT_WORLD_CUP_RESULTS_SHEET_CSV_URL)
     LIGA_BETPLAY_LEAGUE_ID = os.environ.get("LIGA_BETPLAY_LEAGUE_ID")
     LIGA_BETPLAY_SEASON = os.environ.get("LIGA_BETPLAY_SEASON", "2026")
     SQLALCHEMY_DATABASE_URI = _database_url()
