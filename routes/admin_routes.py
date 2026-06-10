@@ -1,8 +1,10 @@
+import csv
 from datetime import datetime, timedelta, timezone
 from functools import wraps
+from io import StringIO
 import secrets
 
-from flask import Blueprint, current_app, flash, redirect, render_template, request, url_for
+from flask import Blueprint, Response, current_app, flash, redirect, render_template, request, url_for
 from flask_login import current_user, login_required
 
 from models import db
@@ -309,6 +311,32 @@ def import_world_cup_results_route():
         summary = import_world_cup_results_csv(request.files.get("results_csv"))
         flash(summary.message, "success" if summary.ok else "error")
     return render_template("admin/import_world_cup_results.html", summary=summary)
+
+
+@admin_bp.route("/world-cup/results-template.csv")
+@admin_required
+def world_cup_results_template_route():
+    output = StringIO()
+    writer = csv.writer(output)
+    writer.writerow(["api_id", "local", "visitante", "goles_local", "goles_visitante", "estado"])
+
+    matches = (
+        Match.query.filter(
+            Match.competition == WORLD_CUP_COMPETITION,
+            Match.home_score.is_(None),
+            Match.away_score.is_(None),
+        )
+        .order_by(Match.starts_at.asc())
+        .all()
+    )
+    for match in matches:
+        writer.writerow([match.api_id, match.home_team, match.away_team, "", "", "finalizado"])
+
+    return Response(
+        output.getvalue(),
+        mimetype="text/csv",
+        headers={"Content-Disposition": "attachment; filename=resultados_mundial_pendientes.csv"},
+    )
 
 
 @admin_bp.route("/liga-betplay/sync-forebet-results", methods=["POST"])

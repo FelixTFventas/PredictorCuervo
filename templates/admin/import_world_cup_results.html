@@ -7,7 +7,10 @@
         <h1>Importar resultados Mundial</h1>
         <p class="muted">Sube un CSV con resultados del Mundial. Actualiza partidos y recalcula puntos automaticamente.</p>
     </div>
-    <a class="button primary" href="{{ url_for('admin.matches') }}">Volver al Mundial</a>
+    <div class="admin-headline-actions">
+        <a class="button ghost" href="{{ url_for('admin.world_cup_results_template_route') }}">Descargar plantilla CSV</a>
+        <a class="button primary" href="{{ url_for('admin.matches') }}">Volver al Mundial</a>
+    </div>
 </section>
 
 <section class="panel import-panel">
