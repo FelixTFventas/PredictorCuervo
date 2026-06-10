@@ -8,18 +8,16 @@
 </section>
 <section class="metric-grid">
     <article class="metric-card"><span>Mundial</span><strong>{{ world_cup_matches }}</strong></article>
-    <article class="metric-card"><span>Liga BetPlay</span><strong>{{ liga_betplay_matches_count }}</strong></article>
     <article class="metric-card"><span>Finalizados Mundial</span><strong>{{ finished_matches }}</strong></article>
     <article class="metric-card"><span>Predicciones</span><strong>{{ predictions_count }}</strong></article>
 </section>
 <section class="admin-actions">
     <a class="button primary" href="{{ url_for('admin.matches') }}">Gestionar Mundial</a>
-    <a class="button primary" href="{{ url_for('admin.liga_betplay_matches') }}">Gestionar Liga BetPlay</a>
     <a class="button ghost" href="{{ url_for('admin.champion_admin') }}">Campeon Mundial</a>
     <a class="button ghost" href="{{ url_for('admin.invitations') }}">Invitaciones</a>
     <a class="button ghost" href="{{ url_for('admin.new_user') }}">Crear usuario</a>
     <a class="button ghost" href="{{ url_for('admin.new_match') }}">Nuevo partido</a>
-    <a class="button ghost" href="{{ url_for('admin.import_liga_betplay_results_route') }}">Importar resultados Liga CSV</a>
+    <a class="button ghost" href="{{ url_for('admin.import_world_cup_results_route') }}">Importar resultados Mundial CSV</a>
     <form method="post" action="{{ url_for('admin.recalculate_points') }}"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><button class="button ghost" type="submit">Recalcular puntos</button></form>
 </section>
 {% endblock %}

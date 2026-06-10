@@ -22,6 +22,7 @@ from services.liga_betplay_results_import_service import import_liga_betplay_res
 from services.points_service import update_prediction_points
 from services.sync_service import sync_fixtures, sync_results
 from services.time_service import parse_local_datetime
+from services.world_cup_results_import_service import import_world_cup_results_csv
 
 
 admin_bp = Blueprint("admin", __name__, url_prefix="/admin")
@@ -77,13 +78,11 @@ def recalculate_match_points(match):
 @admin_required
 def dashboard():
     world_cup_matches = Match.query.filter_by(competition=WORLD_CUP_COMPETITION).count()
-    liga_betplay_matches_count = Match.query.filter_by(competition=LIGA_BETPLAY_COMPETITION, season=LIGA_BETPLAY_SEASON).count()
     finished_matches = Match.query.filter_by(competition=WORLD_CUP_COMPETITION, status="finished").count()
     predictions_count = Prediction.query.count()
     return render_template(
         "admin/dashboard.html",
         world_cup_matches=world_cup_matches,
-        liga_betplay_matches_count=liga_betplay_matches_count,
         finished_matches=finished_matches,
         predictions_count=predictions_count,
         api_configured=bool(current_app.config.get("API_FOOTBALL_KEY")),
@@ -300,6 +299,16 @@ def import_liga_betplay_results_route():
         summary = import_liga_betplay_results_csv(request.files.get("results_csv"))
         flash(summary.message, "success" if summary.ok else "error")
     return render_template("admin/import_liga_betplay_results.html", summary=summary)
+
+
+@admin_bp.route("/world-cup/import-results", methods=["GET", "POST"])
+@admin_required
+def import_world_cup_results_route():
+    summary = None
+    if request.method == "POST":
+        summary = import_world_cup_results_csv(request.files.get("results_csv"))
+        flash(summary.message, "success" if summary.ok else "error")
+    return render_template("admin/import_world_cup_results.html", summary=summary)
 
 
 @admin_bp.route("/liga-betplay/sync-forebet-results", methods=["POST"])
