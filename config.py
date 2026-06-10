@@ -39,6 +39,7 @@ class Config:
     API_FOOTBALL_BASE_URL = os.environ.get("API_FOOTBALL_BASE_URL", "https://v3.football.api-sports.io")
     WORLD_CUP_LEAGUE_ID = os.environ.get("WORLD_CUP_LEAGUE_ID")
     WORLD_CUP_SEASON = os.environ.get("WORLD_CUP_SEASON", "2026")
+    WORLD_CUP_RESULTS_SHEET_CSV_URL = os.environ.get("WORLD_CUP_RESULTS_SHEET_CSV_URL")
     LIGA_BETPLAY_LEAGUE_ID = os.environ.get("LIGA_BETPLAY_LEAGUE_ID")
     LIGA_BETPLAY_SEASON = os.environ.get("LIGA_BETPLAY_SEASON", "2026")
     SQLALCHEMY_DATABASE_URI = _database_url()

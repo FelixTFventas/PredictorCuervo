@@ -24,7 +24,7 @@ from services.liga_betplay_results_import_service import import_liga_betplay_res
 from services.points_service import update_prediction_points
 from services.sync_service import sync_fixtures, sync_results
 from services.time_service import parse_local_datetime
-from services.world_cup_results_import_service import import_world_cup_results_csv
+from services.world_cup_results_import_service import import_world_cup_results_csv, sync_world_cup_results_from_sheet
 
 
 admin_bp = Blueprint("admin", __name__, url_prefix="/admin")
@@ -310,7 +310,23 @@ def import_world_cup_results_route():
     if request.method == "POST":
         summary = import_world_cup_results_csv(request.files.get("results_csv"))
         flash(summary.message, "success" if summary.ok else "error")
-    return render_template("admin/import_world_cup_results.html", summary=summary)
+    return render_template(
+        "admin/import_world_cup_results.html",
+        summary=summary,
+        sheet_configured=bool(current_app.config.get("WORLD_CUP_RESULTS_SHEET_CSV_URL")),
+    )
+
+
+@admin_bp.route("/world-cup/sync-results-sheet", methods=["POST"])
+@admin_required
+def sync_world_cup_results_sheet_route():
+    summary = sync_world_cup_results_from_sheet(current_app.config.get("WORLD_CUP_RESULTS_SHEET_CSV_URL"))
+    flash(summary.message, "success" if summary.ok else "error")
+    return render_template(
+        "admin/import_world_cup_results.html",
+        summary=summary,
+        sheet_configured=bool(current_app.config.get("WORLD_CUP_RESULTS_SHEET_CSV_URL")),
+    )
 
 
 @admin_bp.route("/world-cup/results-template.csv")

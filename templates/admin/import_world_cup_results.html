@@ -37,6 +37,21 @@ wc2026-group-001,2,1,finished</code></pre>
     </div>
 </section>
 
+<section class="panel import-panel">
+    <div class="section-title">
+        <h2>Google Sheets</h2>
+        <span>Sincronizacion manual</span>
+    </div>
+    <p class="muted">Publica la hoja como CSV y configura WORLD_CUP_RESULTS_SHEET_CSV_URL. Luego usa este boton para actualizar resultados y recalcular puntos.</p>
+    <form method="post" action="{{ url_for('admin.sync_world_cup_results_sheet_route') }}" class="form-card import-form">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <button class="button primary" type="submit" {% if not sheet_configured %}disabled{% endif %}>Sincronizar desde Google Sheets</button>
+    </form>
+    {% if not sheet_configured %}
+        <p class="muted">Configura <code>WORLD_CUP_RESULTS_SHEET_CSV_URL</code> para activar este boton.</p>
+    {% endif %}
+</section>
+
 {% if summary %}
     <section class="panel import-summary">
         <div class="section-title">

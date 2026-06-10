@@ -1,6 +1,8 @@
 import csv
 from dataclasses import dataclass, field
-from io import TextIOWrapper
+from io import StringIO, TextIOWrapper
+from urllib.error import HTTPError, URLError
+from urllib.request import urlopen
 
 from models import db
 from models.match import Match
@@ -91,6 +93,37 @@ def import_world_cup_results_csv(file_storage):
         return WorldCupResultsImportSummary(False, "No se pudo leer el CSV. Usa codificacion UTF-8.")
 
     return _import_world_cup_results_reader(reader)
+
+
+def import_world_cup_results_csv_text(csv_text):
+    if not (csv_text or "").strip():
+        return WorldCupResultsImportSummary(False, "La hoja no tiene contenido CSV.")
+
+    stream = StringIO(csv_text)
+    reader = csv.DictReader(stream)
+    return _import_world_cup_results_reader(reader)
+
+
+def sync_world_cup_results_from_sheet(sheet_url):
+    if not sheet_url:
+        return WorldCupResultsImportSummary(False, "Configura WORLD_CUP_RESULTS_SHEET_CSV_URL para sincronizar Google Sheets.")
+
+    try:
+        with urlopen(sheet_url, timeout=20) as response:
+            csv_text = response.read().decode("utf-8-sig")
+    except HTTPError as exc:
+        return WorldCupResultsImportSummary(False, f"Google Sheets respondio HTTP {exc.code}.")
+    except URLError as exc:
+        return WorldCupResultsImportSummary(False, f"No se pudo conectar con Google Sheets: {exc.reason}")
+    except TimeoutError:
+        return WorldCupResultsImportSummary(False, "La sincronizacion con Google Sheets excedio el tiempo limite.")
+    except UnicodeDecodeError:
+        return WorldCupResultsImportSummary(False, "No se pudo leer la hoja. Publicala como CSV con codificacion UTF-8.")
+
+    summary = import_world_cup_results_csv_text(csv_text)
+    if summary.ok:
+        summary.message = f"Google Sheets sincronizado. {summary.message}"
+    return summary
 
 
 def _import_world_cup_results_reader(reader):
