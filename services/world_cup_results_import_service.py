@@ -8,6 +8,7 @@ from models import db
 from models.match import Match
 from services.competition_service import WORLD_CUP_COMPETITION
 from services.points_service import update_prediction_points
+from services.world_cup_bracket_service import update_world_cup_bracket
 
 
 REQUIRED_COLUMNS = {"api_id", "home_score", "away_score"}
@@ -163,7 +164,9 @@ def _import_world_cup_results_reader(reader):
         except ValueError as exc:
             summary.errors.append(str(exc))
 
+    bracket_summary = None
     if summary.updated_matches:
+        bracket_summary = update_world_cup_bracket(commit=False)
         db.session.commit()
     else:
         db.session.rollback()
@@ -173,5 +176,8 @@ def _import_world_cup_results_reader(reader):
         summary.message = "Resultados importados con advertencias." if summary.ok else "No se importaron resultados."
     else:
         summary.message = "Resultados importados correctamente."
+
+    if bracket_summary and bracket_summary.updated_matches:
+        summary.message = f"{summary.message} {bracket_summary.message}"
 
     return summary

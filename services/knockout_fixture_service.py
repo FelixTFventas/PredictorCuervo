@@ -93,12 +93,18 @@ def create_knockout_placeholders():
             if match:
                 updated += 1
                 data.pop("status", None)
+                preserve_real_teams = not match.has_placeholder_teams
             else:
                 match = Match(api_id=data["api_id"])
                 db.session.add(match)
                 created += 1
+                preserve_real_teams = False
+
+            team_fields = {"home_team", "away_team"} if preserve_real_teams else set()
 
             for field, value in data.items():
+                if field in team_fields:
+                    continue
                 setattr(match, field, value)
 
         db.session.commit()

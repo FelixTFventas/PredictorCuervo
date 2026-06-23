@@ -24,6 +24,7 @@ from services.liga_betplay_results_import_service import import_liga_betplay_res
 from services.points_service import update_prediction_points
 from services.sync_service import sync_fixtures, sync_results
 from services.time_service import parse_local_datetime
+from services.world_cup_bracket_service import update_world_cup_bracket
 from services.world_cup_results_import_service import import_world_cup_results_csv, sync_world_cup_results_from_sheet
 
 
@@ -262,6 +263,8 @@ def save_result(match_id):
     recalculate_match_points(match)
     if match.competition == LIGA_BETPLAY_COMPETITION:
         update_liga_betplay_bracket(commit=False)
+    elif match.competition == WORLD_CUP_COMPETITION:
+        update_world_cup_bracket(commit=False)
     db.session.commit()
     flash("Resultado guardado y puntos recalculados.", "success")
     return redirect(url_for(redirect_endpoint))
