@@ -28,10 +28,14 @@ def group_matches(matches):
 def ranking_rows_for_competition(competition):
     match_points = func.coalesce(func.sum(case((Match.competition == competition, Prediction.points), else_=0)), 0)
     predictions_count = func.coalesce(func.sum(case((Match.competition == competition, 1), else_=0)), 0)
-    exact_hits = func.coalesce(
-        func.sum(case(((Match.competition == competition) & (Prediction.points == 3), 1), else_=0)),
-        0,
+    exact_hit_condition = (
+        (Match.competition == competition)
+        & (Match.home_score.isnot(None))
+        & (Match.away_score.isnot(None))
+        & (Prediction.pred_home_score == Match.home_score)
+        & (Prediction.pred_away_score == Match.away_score)
     )
+    exact_hits = func.coalesce(func.sum(case((exact_hit_condition, 1), else_=0)), 0)
     query = User.query.outerjoin(Prediction, Prediction.user_id == User.id).outerjoin(Match, Prediction.match_id == Match.id)
 
     if competition == WORLD_CUP_COMPETITION:

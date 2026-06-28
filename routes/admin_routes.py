@@ -273,10 +273,7 @@ def save_result(match_id):
 @admin_bp.route("/recalculate-points", methods=["POST"])
 @admin_required
 def recalculate_points():
-    for prediction in Prediction.query.all():
-        update_prediction_points(prediction)
-    db.session.commit()
-    flash("Puntos recalculados.", "success")
+    flash("Recalculo general desactivado para conservar puntos historicos.", "error")
     return redirect(url_for("admin.dashboard"))
 
 

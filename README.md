@@ -10,7 +10,7 @@ Aplicacion Flask para competir con predicciones de partidos mundialistas.
 - Partidos cargados automaticamente con SQLite.
 - Predicciones editables antes del inicio del partido.
 - Bloqueo automatico cuando el partido ya empezo.
-- Calculo de puntos: 3 exacto, 2 por ganador/empate, 0 sin acierto.
+- Calculo de puntos: 3 exacto y 2 por ganador/empate; desde Dieciseisavos hasta la Final del Mundial, incluyendo Tercer puesto, 6 exacto y 4 por ganador/empate.
 - Dashboard, perfil y ranking global.
 - Interfaz responsive tipo app deportiva.
 - Estructura preparada para API-Football.

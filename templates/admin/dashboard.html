@@ -18,6 +18,5 @@
     <a class="button ghost" href="{{ url_for('admin.new_user') }}">Crear usuario</a>
     <a class="button ghost" href="{{ url_for('admin.new_match') }}">Nuevo partido</a>
     <a class="button ghost" href="{{ url_for('admin.import_world_cup_results_route') }}">Importar resultados Mundial CSV</a>
-    <form method="post" action="{{ url_for('admin.recalculate_points') }}"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><button class="button ghost" type="submit">Recalcular puntos</button></form>
 </section>
 {% endblock %}
