@@ -28,3 +28,8 @@ def world_cup_venue_local_to_utc_naive(date_value, time_value, venue):
     if timezone_name is None:
         raise ValueError(f"sede sin zona horaria configurada: {venue}")
     return local_datetime.replace(tzinfo=ZoneInfo(timezone_name)).astimezone(timezone.utc).replace(tzinfo=None)
+
+
+def world_cup_eastern_to_utc_naive(date_value, time_value):
+    eastern_datetime = datetime.strptime(f"{date_value} {time_value}", "%Y-%m-%d %H:%M")
+    return eastern_datetime.replace(tzinfo=ZoneInfo("America/New_York")).astimezone(timezone.utc).replace(tzinfo=None)

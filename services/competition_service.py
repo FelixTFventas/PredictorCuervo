@@ -12,6 +12,18 @@ from models.user import User
 WORLD_CUP_COMPETITION = "FIFA World Cup"
 LIGA_BETPLAY_COMPETITION = "Liga BetPlay"
 LIGA_BETPLAY_SEASON = "2026"
+WORLD_CUP_VISIBLE_STAGES = {
+    "Dieciseisavos",
+    "Octavos de final",
+    "Cuartos de final",
+    "Semifinales",
+    "Tercer puesto",
+    "Final",
+}
+
+
+def world_cup_visible_stages_filter():
+    return Match.stage.in_(WORLD_CUP_VISIBLE_STAGES)
 
 
 def group_matches(matches):

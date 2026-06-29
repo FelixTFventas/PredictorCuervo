@@ -12,7 +12,13 @@ from models.invitation import Invitation
 from models.match import Match
 from models.prediction import Prediction
 from models.user import User
-from services.competition_service import LIGA_BETPLAY_COMPETITION, LIGA_BETPLAY_SEASON, WORLD_CUP_COMPETITION, group_matches
+from services.competition_service import (
+    LIGA_BETPLAY_COMPETITION,
+    LIGA_BETPLAY_SEASON,
+    WORLD_CUP_COMPETITION,
+    group_matches,
+    world_cup_visible_stages_filter,
+)
 from services.champion_service import available_world_cup_teams, champion_setting, public_champion_rows, set_champion_setting
 from services.api_football_service import check_api_status, fetch_colombia_leagues, fetch_liga_betplay_fixtures_preview
 from services.fixture_import_service import import_group_fixture
@@ -80,8 +86,12 @@ def recalculate_match_points(match):
 @admin_bp.route("/")
 @admin_required
 def dashboard():
-    world_cup_matches = Match.query.filter_by(competition=WORLD_CUP_COMPETITION).count()
-    finished_matches = Match.query.filter_by(competition=WORLD_CUP_COMPETITION, status="finished").count()
+    world_cup_matches = Match.query.filter_by(competition=WORLD_CUP_COMPETITION).filter(world_cup_visible_stages_filter()).count()
+    finished_matches = (
+        Match.query.filter_by(competition=WORLD_CUP_COMPETITION, status="finished")
+        .filter(world_cup_visible_stages_filter())
+        .count()
+    )
     predictions_count = Prediction.query.count()
     return render_template(
         "admin/dashboard.html",
@@ -165,12 +175,17 @@ def champion_admin():
 @admin_bp.route("/matches")
 @admin_required
 def matches():
-    matches_list = Match.query.filter_by(competition=WORLD_CUP_COMPETITION).order_by(Match.starts_at.asc()).all()
+    matches_list = (
+        Match.query.filter_by(competition=WORLD_CUP_COMPETITION)
+        .filter(world_cup_visible_stages_filter())
+        .order_by(Match.starts_at.asc())
+        .all()
+    )
     return render_template(
         "admin/matches.html",
         grouped_matches=group_matches(matches_list),
         page_title="Partidos Mundial",
-        page_description="Gestiona fixture, resultados y cruces del Mundial.",
+        page_description="Gestiona fixture, resultados y cruces de fase eliminatoria del Mundial.",
         return_to="admin.matches",
         team_display="flags",
     )

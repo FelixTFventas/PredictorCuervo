@@ -8,7 +8,12 @@ from models import db
 from models.champion_pick import ChampionPick
 from models.match import Match
 from models.prediction import Prediction
-from services.competition_service import WORLD_CUP_COMPETITION, group_matches, ranking_rows_for_competition
+from services.competition_service import (
+    WORLD_CUP_COMPETITION,
+    group_matches,
+    ranking_rows_for_competition,
+    world_cup_visible_stages_filter,
+)
 
 
 match_bp = Blueprint("match", __name__)
@@ -25,6 +30,7 @@ def dashboard():
     now_utc = datetime.now(timezone.utc).replace(tzinfo=None)
     next_matches = (
         Match.query.filter_by(competition=WORLD_CUP_COMPETITION, status="scheduled")
+        .filter(world_cup_visible_stages_filter())
         .filter(Match.starts_at > now_utc)
         .order_by(Match.starts_at.asc())
         .limit(3)
@@ -47,7 +53,12 @@ def dashboard():
 @match_bp.route("/matches")
 @login_required
 def matches():
-    matches_list = Match.query.filter_by(competition=WORLD_CUP_COMPETITION).order_by(Match.starts_at.asc()).all()
+    matches_list = (
+        Match.query.filter_by(competition=WORLD_CUP_COMPETITION)
+        .filter(world_cup_visible_stages_filter())
+        .order_by(Match.starts_at.asc())
+        .all()
+    )
     grouped_matches = group_matches(matches_list)
     user_predictions = {
         prediction.match_id: prediction
@@ -58,7 +69,7 @@ def matches():
         grouped_matches=grouped_matches,
         user_predictions=user_predictions,
         page_title="Predicciones Mundial",
-        page_description="Partidos del Mundial ordenados por grupos y fases. Los cruces pendientes se habilitan cuando tengan equipos definidos.",
+        page_description="Partidos de fase eliminatoria del Mundial. Los cruces pendientes se habilitan cuando tengan equipos definidos.",
         return_to="match.matches",
     )
 
