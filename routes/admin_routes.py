@@ -38,6 +38,14 @@ admin_bp = Blueprint("admin", __name__, url_prefix="/admin")
 
 MATCH_STATUSES = ["scheduled", "live", "finished", "postponed", "cancelled"]
 INVITATION_DAYS = 3
+WORLD_CUP_KNOCKOUT_STAGES = {
+    "Dieciseisavos",
+    "Octavos de final",
+    "Cuartos de final",
+    "Semifinales",
+    "Tercer puesto",
+    "Final",
+}
 
 
 def admin_required(view):
@@ -273,6 +281,13 @@ def save_result(match_id):
     if match.home_score < 0 or match.away_score < 0:
         flash("Los goles no pueden ser negativos.", "error")
         return redirect(url_for(redirect_endpoint))
+
+    winner_team = request.form.get("winner_team", "").strip() or None
+    if match.competition == WORLD_CUP_COMPETITION and match.stage in WORLD_CUP_KNOCKOUT_STAGES:
+        if winner_team and winner_team not in {match.home_team, match.away_team}:
+            flash("Selecciona un ganador valido para el partido.", "error")
+            return redirect(url_for(redirect_endpoint))
+        match.winner_team = winner_team if match.home_score == match.away_score else None
 
     match.status = "finished"
     recalculate_match_points(match)

@@ -18,6 +18,7 @@ class Match(db.Model):
     round_name = db.Column(db.String(80), nullable=False, default="Fecha por confirmar")
     stage = db.Column(db.String(80), nullable=False, default="Fase de grupos")
     status = db.Column(db.String(20), nullable=False, default="scheduled")
+    winner_team = db.Column(db.String(80))
     last_synced_at = db.Column(db.DateTime)
 
     predictions = db.relationship("Prediction", back_populates="match", cascade="all, delete-orphan")

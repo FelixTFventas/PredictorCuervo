@@ -27,6 +27,7 @@ def ensure_sqlite_schema():
         "round_name": 'ALTER TABLE "match" ADD COLUMN round_name VARCHAR(80) NOT NULL DEFAULT "Fecha por confirmar"',
         "stage": 'ALTER TABLE "match" ADD COLUMN stage VARCHAR(80) NOT NULL DEFAULT "Fase de grupos"',
         "status": 'ALTER TABLE "match" ADD COLUMN status VARCHAR(20) NOT NULL DEFAULT "scheduled"',
+        "winner_team": 'ALTER TABLE "match" ADD COLUMN winner_team VARCHAR(80)',
         "last_synced_at": 'ALTER TABLE "match" ADD COLUMN last_synced_at DATETIME',
     }
     for column_name, statement in match_additions.items():

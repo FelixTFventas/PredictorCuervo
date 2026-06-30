@@ -31,6 +31,44 @@ THIRD_PLACE_ROUND_OF_32_MATCHES = {
     "L": "wc2026-r32-08",
 }
 
+KNOCKOUT_ADVANCEMENT_MATCHES = {
+    "wc2026-r16-01": (("winner", "wc2026-r32-02"), ("winner", "wc2026-r32-05")),
+    "wc2026-r16-02": (("winner", "wc2026-r32-01"), ("winner", "wc2026-r32-03")),
+    "wc2026-r16-03": (("winner", "wc2026-r32-04"), ("winner", "wc2026-r32-06")),
+    "wc2026-r16-04": (("winner", "wc2026-r32-07"), ("winner", "wc2026-r32-08")),
+    "wc2026-r16-05": (("winner", "wc2026-r32-11"), ("winner", "wc2026-r32-12")),
+    "wc2026-r16-06": (("winner", "wc2026-r32-09"), ("winner", "wc2026-r32-10")),
+    "wc2026-r16-07": (("winner", "wc2026-r32-14"), ("winner", "wc2026-r32-16")),
+    "wc2026-r16-08": (("winner", "wc2026-r32-13"), ("winner", "wc2026-r32-15")),
+    "wc2026-qf-01": (("winner", "wc2026-r16-01"), ("winner", "wc2026-r16-02")),
+    "wc2026-qf-02": (("winner", "wc2026-r16-05"), ("winner", "wc2026-r16-06")),
+    "wc2026-qf-03": (("winner", "wc2026-r16-03"), ("winner", "wc2026-r16-04")),
+    "wc2026-qf-04": (("winner", "wc2026-r16-07"), ("winner", "wc2026-r16-08")),
+    "wc2026-sf-01": (("winner", "wc2026-qf-01"), ("winner", "wc2026-qf-02")),
+    "wc2026-sf-02": (("winner", "wc2026-qf-03"), ("winner", "wc2026-qf-04")),
+    "wc2026-third-place": (("loser", "wc2026-sf-01"), ("loser", "wc2026-sf-02")),
+    "wc2026-final": (("winner", "wc2026-sf-01"), ("winner", "wc2026-sf-02")),
+}
+
+KNOCKOUT_TARGET_PLACEHOLDERS = {
+    "wc2026-r16-01": ("Ganador Partido 74", "Ganador Partido 77"),
+    "wc2026-r16-02": ("Ganador Partido 73", "Ganador Partido 75"),
+    "wc2026-r16-03": ("Ganador Partido 76", "Ganador Partido 78"),
+    "wc2026-r16-04": ("Ganador Partido 79", "Ganador Partido 80"),
+    "wc2026-r16-05": ("Ganador Partido 83", "Ganador Partido 84"),
+    "wc2026-r16-06": ("Ganador Partido 81", "Ganador Partido 82"),
+    "wc2026-r16-07": ("Ganador Partido 86", "Ganador Partido 88"),
+    "wc2026-r16-08": ("Ganador Partido 85", "Ganador Partido 87"),
+    "wc2026-qf-01": ("Ganador Partido 89", "Ganador Partido 90"),
+    "wc2026-qf-02": ("Ganador Partido 93", "Ganador Partido 94"),
+    "wc2026-qf-03": ("Ganador Partido 91", "Ganador Partido 92"),
+    "wc2026-qf-04": ("Ganador Partido 95", "Ganador Partido 96"),
+    "wc2026-sf-01": ("Ganador Partido 97", "Ganador Partido 98"),
+    "wc2026-sf-02": ("Ganador Partido 99", "Ganador Partido 100"),
+    "wc2026-third-place": ("Perdedor Partido 101", "Perdedor Partido 102"),
+    "wc2026-final": ("Ganador Partido 101", "Ganador Partido 102"),
+}
+
 # FIFA World Cup 26 Regulations, Annexe C. Each string is ordered as:
 # 1A, 1B, 1D, 1E, 1G, 1I, 1K, 1L.
 ANNEX_C_OPTIONS = (
@@ -584,6 +622,8 @@ def update_world_cup_bracket(commit=True):
             third_place_ready = True
             updated += _update_third_place_round_of_32(group_positions, third_groups)
 
+    updated += _update_knockout_advancement()
+
     if updated and commit:
         db.session.commit()
 
@@ -699,8 +739,58 @@ def _set_match_teams(api_id, home_team, away_team):
     return 1
 
 
+def _update_knockout_advancement():
+    updated = 0
+    for target_api_id, (home_source, away_source) in KNOCKOUT_ADVANCEMENT_MATCHES.items():
+        home_placeholder, away_placeholder = KNOCKOUT_TARGET_PLACEHOLDERS[target_api_id]
+        home_team = _resolve_knockout_source(*home_source) or home_placeholder
+        away_team = _resolve_knockout_source(*away_source) or away_placeholder
+        updated += _set_knockout_match_teams(target_api_id, home_team, away_team)
+    return updated
+
+
+def _resolve_knockout_source(result_type, source_api_id):
+    source_match = Match.query.filter_by(api_id=source_api_id).first()
+    if not source_match or not source_match.has_result:
+        return None
+
+    winner = _knockout_winner(source_match)
+    if not winner:
+        return None
+    if result_type == "winner":
+        return winner
+    return source_match.away_team if winner == source_match.home_team else source_match.home_team
+
+
+def _knockout_winner(match):
+    if match.home_score > match.away_score:
+        return match.home_team
+    if match.away_score > match.home_score:
+        return match.away_team
+    if match.winner_team in {match.home_team, match.away_team}:
+        return match.winner_team
+    return None
+
+
+def _set_knockout_match_teams(api_id, home_team, away_team):
+    match = Match.query.filter_by(api_id=api_id).first()
+    if not match or match.has_result or match.status in {"live", "finished", "cancelled"}:
+        return 0
+    if not match.has_placeholder_teams and (match.home_team, match.away_team) == (home_team, away_team):
+        return 0
+    if not match.has_placeholder_teams and match.status != "scheduled":
+        return 0
+    if match.home_team == home_team and match.away_team == away_team:
+        return 0
+    match.home_team = home_team
+    match.away_team = away_team
+    if match.winner_team not in {None, home_team, away_team}:
+        match.winner_team = None
+    return 1
+
+
 def _summary_message(summary):
-    parts = [f"Dieciseisavos actualizados: {summary.updated_matches} cruces definidos."]
+    parts = [f"Cruces Mundial actualizados: {summary.updated_matches} cambios aplicados."]
     if summary.pending_groups:
         parts.append(f"Grupos pendientes: {', '.join(summary.pending_groups)}.")
     if summary.unresolved_groups:

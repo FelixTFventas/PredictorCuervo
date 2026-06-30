@@ -41,6 +41,7 @@
                             </h2>
                             <p class="muted">{{ match.round_name }} · {{ match.venue }}</p>
                             {% if match.has_result %}<p class="result-strip">Resultado: {{ match.home_score }} - {{ match.away_score }}</p>{% endif %}
+                            {% if match.winner_team %}<p class="muted">Ganador definido: {{ club_name(match.winner_team) if team_display == "clubs" else team_name(match.winner_team) }}</p>{% endif %}
                         </div>
                         <div class="admin-match-tools">
                             <a class="button small ghost" href="{{ url_for('admin.edit_match', match_id=match.id) }}">Editar</a>
@@ -49,6 +50,13 @@
                                 <input type="hidden" name="return_to" value="{{ return_to or 'admin.matches' }}">
                                 <input type="number" name="home_score" min="0" value="{{ match.home_score if match.home_score is not none else '' }}" placeholder="Local" required>
                                 <input type="number" name="away_score" min="0" value="{{ match.away_score if match.away_score is not none else '' }}" placeholder="Visitante" required>
+                                {% if team_display == "flags" and match.stage in ["Dieciseisavos", "Octavos de final", "Cuartos de final", "Semifinales", "Tercer puesto", "Final"] and not match.has_placeholder_teams %}
+                                    <select name="winner_team" aria-label="Ganador manual">
+                                        <option value="">Ganador si empata</option>
+                                        <option value="{{ match.home_team }}" {% if match.winner_team == match.home_team %}selected{% endif %}>{{ match.home_team }}</option>
+                                        <option value="{{ match.away_team }}" {% if match.winner_team == match.away_team %}selected{% endif %}>{{ match.away_team }}</option>
+                                    </select>
+                                {% endif %}
                                 <button class="button small" type="submit">Guardar resultado</button>
                             </form>
                         </div>
